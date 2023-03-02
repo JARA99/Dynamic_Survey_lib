@@ -20,4 +20,6 @@ def generate_dataset(w:np.ndarray,n:int = 100):
         y, score = blc_predictor(w,x)
 
         dataset.append((x,y))
+    
+    return dataset
 

@@ -1,5 +1,6 @@
 # File name: basic_linear_classifier.py
 # Author: Jorge Alejandro Rodriguez Aldana
+# Date: 1mar2023
 
 # Import libraries
 # -----------------
@@ -108,7 +109,7 @@ def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
 # Gradient descent
 # ----------------
 
-def gradient_descent(loss:function,dd_loss:function,training_dataset:Iterable,eta:float = 0.01,iterations = 500,verbose:bool = True):
+def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,iterations = 500,verbose:bool = True):
     
     dimension = training_dataset[0][0].shape[0]
     w = np.zeros(dimension)
