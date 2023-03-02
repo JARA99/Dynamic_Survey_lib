@@ -62,9 +62,9 @@ def zero_one_loss(w:np.ndarray,x:np.ndarray,y:float):
     Returns:
         float: 0-1 loss value
     """
-    margin = margin(w,x,y)
+    mar = margin(w,x,y)
 
-    if margin <= 0:
+    if mar <= 0:
         return 1
     else:
         return 0
@@ -81,9 +81,9 @@ def hinge_loss(w:np.ndarray,x:np.ndarray,y:float):
         float: Hinge loss value
     """
 
-    margin = margin(w,x,y)
+    mar = margin(w,x,y)
 
-    hinge = max([0,1-margin])
+    hinge = max([0,1-mar])
 
     return hinge
 
@@ -99,11 +99,11 @@ def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
         float: Hinge loss derivative value
     """
 
-    margin = margin(w,x,y)
+    mar = margin(w,x,y)
 
-    if margin < 1:
+    if mar < 1:
         return - x * y
-    if margin >= 1:
+    if mar >= 1:
         return 0
 
 # Gradient descent
@@ -120,7 +120,10 @@ def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,ite
         w = w - (eta * gradient)
 
         if verbose:
-            print('iteration {}:'.format(iteration),'w = {},'.format(w),'Loss(w) = {}'.format(loss_value))
+            print('iteration {}:'.format(iteration+1),'w = {},'.format(w),'Loss(w) = {}'.format(loss_value))
+
+        if loss_value == 0:
+            break
         
     return w
 
