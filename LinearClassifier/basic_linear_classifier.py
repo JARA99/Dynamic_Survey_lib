@@ -128,3 +128,38 @@ def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,ite
     return w
 
 
+
+# Stocastic Gradient descent
+# --------------------------
+
+def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:float = 0.1,iterations = 500,verbose:bool = True):
+    
+    dimension = training_dataset[0][0].shape[0]
+    w = np.zeros(dimension)
+
+    n = 0
+
+    dataset_len = len(training_dataset)
+
+    for iteration in range(iterations):
+        n += 1
+        eta = init_eta/np.sqrt(n)
+
+        rnd_index = np.random.randint(0,dataset_len)
+
+        x = training_dataset[rnd_index][0]
+        y = training_dataset[rnd_index][1]
+
+        loss_value = sum(loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
+        gradient = dd_loss(w,x,y)
+        w = w - (eta * gradient)
+
+        if verbose:
+            print('iteration {}:'.format(iteration+1),'w = {},'.format(w),'Loss(w) = {}'.format(loss_value))
+
+        if loss_value == 0:
+            break
+        
+    return w
+
+
