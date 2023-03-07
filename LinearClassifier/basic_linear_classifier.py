@@ -9,18 +9,18 @@ import numpy as np
 from collections.abc import Iterable
 import random as rnd
 
-# Define predictor
-# ----------------
+# Define blc predictor
+# --------------------
 
 def blc_predictor(w:np.ndarray,x:np.ndarray):
-    """([b]inary) [l]inear [c]lassifier predictor. Returns the sign and score of a prediction given a weigth (w) and a feauture vector (x).
+    """([b]inary) [l]inear [c]lassifier predictor. Returns the sign of a prediction given a weigth (w) and a feauture vector (x).
 
     Args:
         w (np.ndarray): n-dimensional weight vector
         x (np.ndarray): n-dimensional feauture vector
 
     Returns:
-        float, float: sign value, score value
+        float: sign value
     """
 
     score = w.dot(x)
@@ -32,7 +32,25 @@ def blc_predictor(w:np.ndarray,x:np.ndarray):
     else:
         sign = np.nan
     
-    return sign, score
+    return sign
+
+# Define regression predictor
+# ---------------------------
+
+def reg_predictor(w:np.ndarray,x:np.ndarray):
+    """([reg]ression predictor. Returns the sign of a prediction given a weigth (w) and a feauture vector (x).
+
+    Args:
+        w (np.ndarray): n-dimensional weight vector
+        x (np.ndarray): n-dimensional feauture vector
+
+    Returns:
+        float: sign value
+    """
+
+    sign = w.dot(x)
+    
+    return sign
 
 # Define margin
 # -------------
@@ -107,6 +125,40 @@ def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
     if mar >= 1:
         return 0
 
+def squared_loss(w:np.ndarray,x:np.ndarray,y:float):
+    """Squared loss. Returns the squared loss for a given weight (w), feauture vector (x) and true prediction value (y).
+
+    Args:
+        w (np.ndarray): n-dimensional weight vector
+        x (np.ndarray): n-dimensional feauture vector
+        y (float): true prediction value for x
+
+    Returns:
+        float: Squared loss value
+    """
+
+    score = w.dot(x)
+    residual = score - y
+
+    return residual**2
+
+def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
+    """Squared loss. Returns the squared loss derivative for a given weight (w), feauture vector (x) and true prediction value (y).
+
+    Args:
+        w (np.ndarray): n-dimensional weight vector
+        x (np.ndarray): n-dimensional feauture vector
+        y (float): true prediction value for x
+
+    Returns:
+        float: Squared loss derivative value
+    """
+
+    score = w.dot(x)
+    residual = score - y
+
+    return 2*residual*x
+
 # Gradient descent
 # ----------------
 
@@ -147,19 +199,26 @@ def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:f
         eta = init_eta/np.sqrt(n)
         # eta  = init_eta
 
-        rnd_index = np.random.randint(0,dataset_len)
+        indexlist = np.arange(dataset_len)
+        rnd.shuffle(indexlist)
 
-        x = training_dataset[rnd_index][0]
-        y = training_dataset[rnd_index][1]
+        for i in indexlist:
 
-        # Try for each point in each iteration and optimize for it.
+            x = training_dataset[i][0]
+            y = training_dataset[i][1]
 
-        loss_value = sum(loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
-        gradient = dd_loss(w,x,y)
-        w = w - (eta * gradient)
+            sample_loss = loss(w,x,y)
 
-        if verbose:
-            print('iteration {}:'.format(iteration+1),'w = {},'.format(w),'Loss(w) = {}'.format(loss_value))
+            if sample_loss:
+
+                gradient = dd_loss(w,x,y)
+                w = w - (eta * gradient)
+
+
+            loss_value = sum(loss(w,x,y) for x,y in training_dataset)/dataset_len
+
+            if verbose:
+                print('iteration {}, index {}:    w = {}, Loss(w) = {}'.format(iteration+1,i,w,loss_value))
 
         if loss_value == 0:
             break
