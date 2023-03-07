@@ -7,6 +7,7 @@
 
 import numpy as np
 from collections.abc import Iterable
+import random as rnd
 
 # Define predictor
 # ----------------
@@ -144,11 +145,14 @@ def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:f
     for iteration in range(iterations):
         n += 1
         eta = init_eta/np.sqrt(n)
+        # eta  = init_eta
 
         rnd_index = np.random.randint(0,dataset_len)
 
         x = training_dataset[rnd_index][0]
         y = training_dataset[rnd_index][1]
+
+        # Try for each point in each iteration and optimize for it.
 
         loss_value = sum(loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
         gradient = dd_loss(w,x,y)

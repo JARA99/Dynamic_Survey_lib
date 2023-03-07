@@ -16,7 +16,8 @@ def generate_dataset(w:np.ndarray,n:int = 100):
     dimension = w.shape[0]
 
     for data_n in range(n):
-        x = np.random.randn(dimension)
+        # x = np.random.randint(dimension)
+        x = np.random.randint(1,3,dimension)
         y, score = blc_predictor(w,x)
 
         dataset.append((x,y))
@@ -31,7 +32,8 @@ def generate_dataset_with_randomness(w:np.ndarray,n:int = 100):
         x = np.random.randn(dimension)
         y, score = blc_predictor(w,x)
 
-        y += np.random.randn()
+        for i in range(len(x)):
+            x[i] = x[i] + np.random.randn()
 
         dataset.append((x,y))
     
