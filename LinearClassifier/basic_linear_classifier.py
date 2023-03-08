@@ -125,7 +125,7 @@ def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
     if mar >= 1:
         return 0
 
-def squared_loss(w:np.ndarray,x:np.ndarray,y:float):
+def squared_loss(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor):
     """Squared loss. Returns the squared loss for a given weight (w), feauture vector (x) and true prediction value (y).
 
     Args:
@@ -137,12 +137,12 @@ def squared_loss(w:np.ndarray,x:np.ndarray,y:float):
         float: Squared loss value
     """
 
-    score = w.dot(x)
+    score = predictor(w,x)
     residual = score - y
 
     return residual**2
 
-def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
+def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor):
     """Squared loss. Returns the squared loss derivative for a given weight (w), feauture vector (x) and true prediction value (y).
 
     Args:
@@ -154,7 +154,7 @@ def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
         float: Squared loss derivative value
     """
 
-    score = w.dot(x)
+    score = predictor(w,x)
     residual = score - y
 
     return 2*residual*x
