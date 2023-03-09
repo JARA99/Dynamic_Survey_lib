@@ -22,7 +22,7 @@ class item:
     categories:list = []
     dimension:int = 0
 
-    statistics_weights = np.array([0.5,-1,0.05,-0.8])
+    statistics_weights = np.array([0.5,-0.8,0.05,-0.2])
     expert_weight = 1
     
     def reset_category_history() -> None:
@@ -41,7 +41,7 @@ class item:
         item._category_launch_count = np.concatenate(item._category_launch_count,[init_count])
         item._category_answer_history.append([])
     
-    def set_statistics_weights(self_std_w:float = 0.5,self_count_w:float = -1,cat_std_w:float = 0.05,cat_count_w:float = -0.8) -> None:
+    def set_statistics_weights(self_std_w:float = 0.5,self_count_w:float = -0.8,cat_std_w:float = 0.05,cat_count_w:float = -0.2) -> None:
         item.statistics_weights = np.array([self_std_w,self_count_w,cat_std_w,cat_count_w])
 
 
@@ -122,7 +122,7 @@ class item:
         '''A vector containing the percentage of times question or category is launched and its standard deviation in the order: [std_self,count_self,std_category,count_category]'''
         
     def get_feauture_vector(self) -> np.ndarray:
-        return np.concatenate([self.categoryvector,[self.expertvalue],self.statisticsvector])
+        return np.concatenate([self.categoryvector,self.statisticsvector,[self.expertvalue]])
     
     def update_label(self) -> None:
         self.label = self._get_label(np.mean(self.answer_history))
@@ -147,6 +147,8 @@ class item:
         stdeviation_category = np.mean(stdeviation_category)
         count_category = np.mean(count_category)
 
+        # print(stdeviation_self,count_self,stdeviation_category,count_category)
+
         return np.array([stdeviation_self,count_self,stdeviation_category,count_category])
 
     def update_statistics(self) -> None:
@@ -170,6 +172,7 @@ class item:
         stat_label = self.statistics_weights.dot(self.statisticsvector)
         expert_label = self.expert_weight * self.expertvalue
         label = answer + stat_label + expert_label
+        # print(answer,stat_label,expert_label)
         return label
     
     def print_values(self):
@@ -199,11 +202,8 @@ class item:
     def get_dataset_pair(self) -> tuple:
         if self.launch_count > 0:
             self.update_all()
-            statvec = self._get_statistics()
-            feature_vector = np.concatenate([self.categoryvector,[self.expertvalue],statvec])
-            label = self._get_label(np.mean(self.answer_history))
 
-            return (feature_vector,label)
+            return (self.feature_vector,self.label)
 
         else:
             return None
@@ -212,6 +212,6 @@ class item:
         self.feature_vector = self.get_feauture_vector()
 
     def update_all(self) -> None:
-        self.update_feature_vector()
         self.update_statistics()
+        self.update_feature_vector()
         self.update_label()

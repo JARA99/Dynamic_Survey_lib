@@ -6,7 +6,7 @@
 # -----------------
 
 import numpy as np
-from basic_linear_classifier import blc_predictor
+from .basic_linear_classifier import blc_predictor
 
 # Generate dataset from weight
 # ----------------------------

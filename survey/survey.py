@@ -1,15 +1,20 @@
 import numpy as np
 from .item import item as item
 
+LAUNCH_FORMAT = ['-----------------------------------------------------------\n {}','    {}) {}','-----------------------------------------------------------']
+
 class survey:
 
-    def __init__(self,items:list = [],name:str = '',init_training_dataset:list = None,w:np.ndarray = None,predictor = None) -> None:
+    def __init__(self,items:list = [],name:str = '',init_training_dataset:list = None,w:np.ndarray = None,predictor = None,launch_format = LAUNCH_FORMAT) -> None:
         self.name = name
         self.training_dataset = init_training_dataset
         self.item_amount = len(items)
-        self.item_labels = np.zeros(self.item_amount)
+        self.predicted_item_labels = np.zeros(self.item_amount)
         self.w = w
         self.predictor = predictor
+        self.launch_format = launch_format
+
+
         if all(isinstance(item_,item) for item_ in items):
             self.items = items
 
@@ -26,10 +31,10 @@ class survey:
     def get_training_dataset(self) -> list:
         training_dataset = []
         for item_ in self.items:
-            # item_:item
-            dataset_pair = item.get_dataset_pair()
+            item_:item
+            dataset_pair = item_.get_dataset_pair()
             if dataset_pair != None:
-                training_dataset.append()
+                training_dataset.append(dataset_pair)
         
         return training_dataset
 
@@ -45,7 +50,7 @@ class survey:
         
         return feature_vectors
 
-    def get_labels_predict(self,w:np.ndarray,predictor) -> list:
+    def get_predicted_labels(self,w:np.ndarray,predictor) -> list:
         predicted_labels = []
         for item_ in self.items:
             item_:item
@@ -57,7 +62,7 @@ class survey:
         return predicted_labels
     
     def update_labels(self) -> None:
-        self.item_labels = self.get_labels_predict(self.w,self.predictor)
+        self.predicted_item_labels = self.get_predicted_labels(self.w,self.predictor)
 
     def set_w(self,w:np.ndarray) -> None:
         self.w = w
@@ -65,7 +70,52 @@ class survey:
     def set_predictor(self,predictor) -> None:
         self.predictor = predictor
 
+    def print_items(self) -> None:
+        for item_ in self.items:
+            item_:item
+            print('{}] {}'.format(item_.id, item_.question_text))
+    
+    def print_item_info(self,index) -> None:
+        self.items[index].print_values()
+    
+
+    def launch_item(self,index) -> None:
+        item_:item
+        item_ = self.items[index]
+        print(self.launch_format[0].format(item_.question_text))
+        for answ_index in range(len(item_.answers_text)):
+            print(self.launch_format[1].format(answ_index + 1,item_.answers_text[answ_index]))
+        print(self.launch_format[2])
+
+        r = input('R:\\ ')
+        r = int(r)
+
+        try:
+            ans_val = item_.answers_values[r-1]
+            item_.answer(ans_val)
+        except:
+            print('\n\n! --> Not a valid answer, please retry.\n')
+            self.launch_item(index)
+
+    def print_info(self) -> None:
+        # self.name = name
+        # self.training_dataset = init_training_dataset
+        # self.item_amount = len(items)
+        # self.predicted_item_labels = np.zeros(self.item_amount)
+        # self.w = w
+        # self.predictor = predictor
+        # self.launch_format = launch_format
+        print('Survey name: {}'.format(self.name))
+        print('Training dataset: {}'.format(self.training_dataset))
+        print('Item amount: {}'.format(self.item_amount))
+        print('Predicted item labels: {}'.format(self.predicted_item_labels))
+        print('Weight: {}'.format(self.w))
+        print('Predictor: {}'.format(self.predictor))
+        print('ITEMS:\n------')
+        self.print_items()
+
     def update_all(self) -> None:
         self.update_training_dataset()
+        self.update_labels()
 
 

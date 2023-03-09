@@ -162,10 +162,15 @@ def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_pr
 # Gradient descent
 # ----------------
 
-def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,iterations = 500,verbose:bool = True):
+def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,iterations = 500,verbose:bool = True,w:np.ndarray = None):
     
     dimension = training_dataset[0][0].shape[0]
-    w = np.zeros(dimension)
+
+    try:
+        if w == None:
+            w = np.zeros(dimension)
+    except:
+        pass
 
     for iteration in range(iterations):
         loss_value = sum(loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
@@ -185,10 +190,14 @@ def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,ite
 # Stocastic Gradient descent
 # --------------------------
 
-def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:float = 0.1,iterations = 500,verbose:bool = True):
+def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:float = 0.1,iterations = 500,verbose:bool = True, w:np.ndarray = None):
     
     dimension = training_dataset[0][0].shape[0]
-    w = np.zeros(dimension)
+    try:
+        if w == None:
+            w = np.zeros(dimension)
+    except:
+        pass
 
     n = 0
 

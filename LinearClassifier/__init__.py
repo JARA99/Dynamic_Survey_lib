@@ -2,5 +2,5 @@
 # Author: Jorge Alejandro Rodriguez Aldana
 # Date: 8mar2023
 
-from . import item
-from . import survey
+from . import basic_linear_classifier
+from . import generate_dataset
