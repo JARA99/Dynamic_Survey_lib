@@ -32,9 +32,8 @@ class survey:
         training_dataset = []
         for item_ in self.items:
             item_:item
-            dataset_pair = item_.get_dataset_pair()
-            if dataset_pair != None:
-                training_dataset.append(dataset_pair)
+            item_dataset_history = item_.get_dataset_history()
+            training_dataset += item_dataset_history
         
         return training_dataset
 
@@ -85,17 +84,18 @@ class survey:
         print(self.launch_format[0].format(item_.question_text))
         for answ_index in range(len(item_.answers_text)):
             print(self.launch_format[1].format(answ_index + 1,item_.answers_text[answ_index]))
-        print(self.launch_format[2])
+        # print(self.launch_format[2])
 
-        r = input('R:\\ ')
+        r = input('                                                R: ')
+        print(self.launch_format[2])
         r = int(r)
 
-        try:
-            ans_val = item_.answers_values[r-1]
-            item_.answer(ans_val)
-        except:
-            print('\n\n! --> Not a valid answer, please retry.\n')
-            self.launch_item(index)
+        # try:
+        ans_val = item_.answers_values[r-1]
+        item_.answer(ans_val)
+        # except:
+        #     print('\n\n! --> Not a valid answer, please retry.\n')
+        #     self.launch_item(index)
 
     def print_info(self) -> None:
         # self.name = name
