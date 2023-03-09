@@ -10,6 +10,7 @@ HELP_TEXT = '\
 This is a little help for navigating the script:\n\
     h show this [h]elp\n\
     q for launching a [q]uestion\n\
+    a for launching a question [a]nd training the model after\n\
     i for printing [i]nformation\n\
     t for [t]raining the model\n\
     b for [b]reak\n'
@@ -90,6 +91,25 @@ while True:
             item_index = rnd.choice(questions_indexes)
             # print('random without weights = {}'.format(item_index))
             seasons_survey.launch_item(item_index)
+    elif instrucction == 'a':
+        seasons_survey.update_all()
+        weights = seasons_survey.predicted_item_labels
+        if any(weights) != 0:
+            # print(weights)
+            min_weight = min(weights)
+            if min_weight < 0:
+                item_index = rnd.choices(questions_indexes,weights=list(np.array(weights) + abs(min_weight)),k=1)
+            else:
+                item_index = rnd.choices(questions_indexes,weights=weights,k=1)
+            # print('random with weights = {}'.format(item_index))
+            seasons_survey.launch_item(item_index[0])
+        else:
+            item_index = rnd.choice(questions_indexes)
+            # print('random without weights = {}'.format(item_index))
+            seasons_survey.launch_item(item_index)
+        seasons_survey.update_all()
+        w = blc.gradient_descent(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
+        seasons_survey.set_w(w)
     elif instrucction == 'i':
         seasons_survey.update_all()
         seasons_survey.print_info()
