@@ -106,7 +106,8 @@ class survey:
         # self.predictor = predictor
         # self.launch_format = launch_format
         print('Survey name: {}'.format(self.name))
-        print('Training dataset: {}'.format(self.training_dataset))
+        print('Training dataset:')
+        print(*('   {} -> {}\n'.format(x,y) for x,y in self.training_dataset),sep='')
         print('Item amount: {}'.format(self.item_amount))
         print('Predicted item labels: {}'.format(self.predicted_item_labels))
         print('Weight: {}'.format(self.w))

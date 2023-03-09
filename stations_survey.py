@@ -17,7 +17,9 @@ HELP_TEXT_SUMARY = '[h,q,i,t,b]: '
 ETA = 0.1
 ETA_ST = 1
 ITER = 2000
-VERBOSE = False
+VERBOSE = True
+
+SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-0.5,0.25,-0.25
 
 def get_questions_from_excel(excel_file:str = 'tests/Questionarie.xlsx') -> list:
 
@@ -49,16 +51,21 @@ def get_questions_from_excel(excel_file:str = 'tests/Questionarie.xlsx') -> list
 
 questions = get_questions_from_excel()
 item.item.set_categories(CATEGORIES)
+item.item.set_statistics_weights(SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W)
+
 seasons_survey = survey.survey(questions,'Cuestionario sobre estaciones del año')
 
-dim = len(CATEGORIES) + 4 + 1 #Categories plus 4 statistic features plus an expert feature.
-w = np.zeros(dim)
+dim = len(CATEGORIES) #Categories plus 4 statistic features plus an expert feature.
+dim_ext = dim + 4 + 1 #Categories plus 4 statistic features plus an expert feature.
+w = np.zeros(dim_ext)
+w[-1] = 1
+w[dim:dim+4] = SELF_STD_W, SELF_COUNT_W, CAT_STD_W, CAT_COUNT_W
 
 seasons_survey.set_predictor(blc.reg_predictor)
 seasons_survey.set_w(w)
 
 questions_indexes = list(np.arange(seasons_survey.item_amount))
-print(questions_indexes)
+# print(questions_indexes)
 
 print(HELP_TEXT)
 
