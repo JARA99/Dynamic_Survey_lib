@@ -12,13 +12,17 @@ This is a little help for navigating the script:\n\
     q for launching a [q]uestion\n\
     a for launching a question [a]nd training the model after\n\
     i for printing [i]nformation\n\
+    ii for printing information of the 0 item\n\
     t for [t]raining the model\n\
     b for [b]reak\n'
-HELP_TEXT_SUMARY = '[h,q,i,t,b]: '
+HELP_TEXT_SUMARY = '[h,q,a,i,ii,t,b]: '
 ETA = 0.1
 ETA_ST = 1
 ITER = 2000
-VERBOSE = True
+VERBOSE = False
+
+PREDICTOR = blc.reg_predictor
+GRADIENT_DEC = blc.gradient_descent
 
 SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-0.5,0.25,-0.25
 
@@ -62,7 +66,7 @@ w = np.zeros(dim_ext)
 w[-1] = 1
 w[dim:dim+4] = SELF_STD_W, SELF_COUNT_W, CAT_STD_W, CAT_COUNT_W
 
-seasons_survey.set_predictor(blc.reg_predictor)
+seasons_survey.set_predictor(PREDICTOR)
 seasons_survey.set_w(w)
 
 questions_indexes = list(np.arange(seasons_survey.item_amount))
@@ -108,17 +112,19 @@ while True:
             # print('random without weights = {}'.format(item_index))
             seasons_survey.launch_item(item_index)
         seasons_survey.update_all()
-        w = blc.gradient_descent(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
+        w = GRADIENT_DEC(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
         seasons_survey.set_w(w)
     elif instrucction == 'i':
         seasons_survey.update_all()
         seasons_survey.print_info()
     elif instrucction == 't':
         seasons_survey.update_all()
-        w = blc.gradient_descent(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
+        w = GRADIENT_DEC(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
         seasons_survey.set_w(w)
     elif instrucction == 'b':
         break
+    elif instrucction == 'ii':
+        seasons_survey.print_item_info(0)
     else:
         print(HELP_TEXT)
 

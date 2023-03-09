@@ -22,7 +22,7 @@ class item:
     categories:list = []
     dimension:int = 0
 
-    statistics_weights = np.array([0.5,-0.8,0.05,-0.2])
+    statistics_weights = np.array([0.5,-0.5,0.25,-0.25])
     expert_weight = 1
     
     def reset_category_history() -> None:
@@ -100,6 +100,7 @@ class item:
         self.predicted_label = None
         self.launch_count = 0
         self.answer_history = []
+        self.dataset_history = []
 
         self.principal_abs_cat_list = []
         for cat in self.principal_cat_list:
@@ -136,18 +137,31 @@ class item:
             count_self = self.launch_count/item._total_launch_count
         else:
             stdeviation_self = 0
-            count_self = self.launch_count/item._total_launch_count
+            if self._total_launch_count != 0:
+                count_self = self.launch_count/item._total_launch_count
+            else:
+                count_self = 0
 
         stdeviation_category = []
         count_category = []
         for i in self.principal_abs_cat_list:
             i -= 1
-            stdeviation_category.append(np.std(self._category_answer_history[i]))
-            count_category.append(self._category_launch_count[i]/item._total_launch_count)
-        stdeviation_category = np.mean(stdeviation_category)
-        count_category = np.mean(count_category)
+            if len(self._category_answer_history[i]) > 1:
+                stdeviation_category.append(np.std(self._category_answer_history[i]))
 
-        # print(stdeviation_self,count_self,stdeviation_category,count_category)
+                if item._total_launch_count != 0:
+                    count_category.append(self._category_launch_count[i]/item._total_launch_count)
+
+
+        if len(stdeviation_category) > 0:
+            stdeviation_category = np.mean(stdeviation_category)
+        else:
+            stdeviation_category = 0
+        
+        if len(count_category) > 0:
+            count_category = np.mean(count_category)
+        else:
+            count_category = 0
 
         return np.array([stdeviation_self,count_self,stdeviation_category,count_category])
 
@@ -156,10 +170,17 @@ class item:
 
     def answer(self,answer) -> None:
         if self.answer_range[0] <= answer <= self.answer_range[1]:
+            self.update_statistics()
+            self.update_feature_vector()
+            feature_vector = self.feature_vector
+            predict_label = self._get_label(answer)
+
             self.answer_history.append(answer)
             self.launch_count += 1
             item._total_launch_count += 1
             item._category_launch_count += self.categoryvector_abs
+
+            self.dataset_history.append((feature_vector,predict_label))
 
             for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
                 item._category_answer_history[i-1].append(answer*(j/i))
@@ -179,6 +200,7 @@ class item:
         print('\nTOTAL:\n------')
         print('Total item count: {}'.format(item._total_item_count))
         print('Total launch count: {}'.format(item._total_launch_count))
+        print('Statistics weights: {}'.format(item.statistics_weights))
         print('\nCATEGORY:\n---------')
         print('Categories: {}'.format(item.categories))
         print('Dimension: {}'.format(item.dimension))
@@ -207,6 +229,9 @@ class item:
 
         else:
             return None
+    
+    def get_dataset_history(self) -> list:
+        return self.dataset_history
     
     def update_feature_vector(self) -> None:
         self.feature_vector = self.get_feauture_vector()
