@@ -1,5 +1,5 @@
-import basic_linear_classifier as blc
-import generate_dataset as gd
+from LinearClassifier import basic_linear_classifier as blc
+from LinearClassifier import generate_dataset as gd
 import numpy as np
 
 WEIGHT = np.array([-1,2.1,-3.5,4.3,5.2])
@@ -17,7 +17,7 @@ ITER: {}\n\
 VERBOSE: {}'.format(WEIGHT,DATASET_LEN,ETA,ETA_ST,ITER,VERBOSE))
 
 train_dataset = gd.generate_binary_features_dataset(WEIGHT,DATASET_LEN,blc.reg_predictor)
-# print(train_dataset)
+print(train_dataset)
 
 print()
 print('No randomness:')
@@ -37,7 +37,7 @@ print('With stocastic gradient descent:     {}    {}'.format(predicted_width, lo
 
 
 train_dataset = gd.generate_binary_features_dataset_with_randomness(WEIGHT,DATASET_LEN,blc.reg_predictor)
-# print(train_dataset)
+print(train_dataset)
 
 print()
 print('Randomness:')
