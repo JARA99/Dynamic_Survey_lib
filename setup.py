@@ -5,7 +5,7 @@ with open('requirements.txt','r') as req:
 
 setup(
     name='pydyn_surv',
-'version=0.1.0,'
+    version='0.1.0',
     description='A package with tools for generating a dynamic survey using Machine Learning tools.',
     url='https://github.com/JARA99/Dynamic_Survey_lib',
     author='Jorge Alejandro Rodríguez Aldana',
