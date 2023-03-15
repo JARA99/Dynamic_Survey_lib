@@ -1,5 +1,5 @@
-from survey import survey, item
-from LinearClassifier import basic_linear_classifier as blc
+from pydyn_surv.classes import survey, item
+from pydyn_surv.LinearClassifier import basic_linear_classifier as blc
 import pandas as pd
 import numpy as np
 import random as rnd
@@ -26,7 +26,7 @@ GRADIENT_DEC = blc.gradient_descent
 
 SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-0.5,0.25,-0.25
 
-def get_questions_from_excel(excel_file:str = 'tests/Questionarie.xlsx') -> list:
+def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx') -> list:
 
     def str_to_list(string):
         lst = string.split(',')

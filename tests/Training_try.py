@@ -1,5 +1,5 @@
-from LinearClassifier import basic_linear_classifier as blc
-from LinearClassifier import generate_dataset as gd
+from pydyn_surv import basic_linear_classifier as blc
+from pydyn_surv import generate_dataset as gd
 import numpy as np
 
 WEIGHT = np.array([-1,2.1,-3.5,4.3,5.2])

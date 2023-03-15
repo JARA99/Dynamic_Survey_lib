@@ -1,5 +1,5 @@
-from survey import survey, item
-from LinearClassifier import basic_linear_classifier as blc
+from pydyn_surv import survey, item
+from pydyn_surv import basic_linear_classifier as blc
 
 categories = ['Invierno','Primavera','Verano','Otoño']
 
