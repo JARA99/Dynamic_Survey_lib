@@ -10,6 +10,7 @@ class survey:
         self.training_dataset = init_training_dataset
         self.item_amount = len(items)
         self.predicted_item_labels = np.zeros(self.item_amount)
+        self.calculated_item_labels = np.full(self.item_amount,None)
         self.w = w
         self.predictor = predictor
         self.launch_format = launch_format
@@ -59,12 +60,30 @@ class survey:
             item_.set_predicted_label(label)
         
         return predicted_labels
+
+    def get_calculated_labes(self) -> list:
+        calculated_labels = []
+        for item_ in self.items:
+            item_:item
+            item_.update_label()
+            label = item_.label
+            calculated_labels.append(label)
+        
+        return calculated_labels
     
-    def update_labels(self) -> None:
+    def update_predicted_labels(self) -> None:
         self.predicted_item_labels = self.get_predicted_labels(self.w,self.predictor)
+    
+    def update_calculated_labels(self) -> None:
+        self.calculated_item_labels = self.get_calculated_labes()
+    
+    def update_all_labels(self) -> None:
+        self.update_calculated_labels()
+        self.update_predicted_labels()
 
     def set_w(self,w:np.ndarray) -> None:
-        self.w = w
+        self.w = np.concatenate([w,item.statistics_weights,[item.expert_weight]])
+        # print('Weight setted to: {}'.format(self.w))
     
     def set_predictor(self,predictor) -> None:
         self.predictor = predictor
@@ -88,14 +107,14 @@ class survey:
 
         r = input('                                                R: ')
         print(self.launch_format[2])
-        r = int(r)
 
-        # try:
-        ans_val = item_.answers_values[r-1]
-        item_.answer(ans_val)
-        # except:
-        #     print('\n\n! --> Not a valid answer, please retry.\n')
-        #     self.launch_item(index)
+        try:
+            r = int(r)
+            ans_val = item_.answers_values[r-1]
+            item_.answer(ans_val)
+        except:
+            print('\n\n! --> Not a valid answer, please retry.\n')
+            self.launch_item(index)
 
     def print_info(self) -> None:
         # self.name = name
@@ -110,13 +129,17 @@ class survey:
         print(*('   {} -> {}\n'.format(x,y) for x,y in self.training_dataset),sep='')
         print('Item amount: {}'.format(self.item_amount))
         print('Predicted item labels: {}'.format(self.predicted_item_labels))
+        print('Calculated item labels: {}'.format(self.calculated_item_labels))
         print('Weight: {}'.format(self.w))
         print('Predictor: {}'.format(self.predictor))
         print('ITEMS:\n------')
         self.print_items()
 
-    def update_all(self) -> None:
+    def update_all(self,exclude_calculated_labels:bool = False) -> None:
         self.update_training_dataset()
-        self.update_labels()
+        if exclude_calculated_labels:
+            self.update_predicted_labels()
+        else:
+            self.update_all_labels()
 
 

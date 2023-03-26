@@ -41,8 +41,11 @@ class item:
         item._category_launch_count = np.concatenate(item._category_launch_count,[init_count])
         item._category_answer_history.append([])
     
-    def set_statistics_weights(self_std_w:float = 0.5,self_count_w:float = -0.8,cat_std_w:float = 0.05,cat_count_w:float = -0.2) -> None:
+    def set_statistics_weights(self_std_w:float = 0.5,self_count_w:float = -0.5,cat_std_w:float = 0.25,cat_count_w:float = -0.25) -> None:
         item.statistics_weights = np.array([self_std_w,self_count_w,cat_std_w,cat_count_w])
+
+    def set_expert_weight(expert_w:float = 1):
+        item.expert_weight = expert_w
 
 
     # def __init__(self,q_text:dict,principal_cat:list,secondary_cat:list,extra_points:float,answer_range:tuple = (-2,2),principal_value:float = 1,secondary_value:float = 0.5) -> None:
@@ -126,7 +129,10 @@ class item:
         return np.concatenate([self.categoryvector,self.statisticsvector,[self.expertvalue]])
     
     def update_label(self) -> None:
-        self.label = self._get_label(np.mean(self.answer_history))
+        if self.launch_count > 0:
+            self.label = self._get_label(np.mean(self.answer_history))
+        else:
+            self.label = None
 
     def set_predicted_label(self,label) -> None:
         self.predicted_label = label
@@ -170,17 +176,12 @@ class item:
 
     def answer(self,answer) -> None:
         if self.answer_range[0] <= answer <= self.answer_range[1]:
-            self.update_statistics()
-            self.update_feature_vector()
-            feature_vector = self.feature_vector
-            predict_label = self._get_label(answer)
-
             self.answer_history.append(answer)
             self.launch_count += 1
             item._total_launch_count += 1
             item._category_launch_count += self.categoryvector_abs
 
-            self.dataset_history.append((feature_vector,predict_label))
+            self.dataset_history.append((self.categoryvector,answer))
 
             for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
                 item._category_answer_history[i-1].append(answer*(j/i))
@@ -201,6 +202,7 @@ class item:
         print('Total item count: {}'.format(item._total_item_count))
         print('Total launch count: {}'.format(item._total_launch_count))
         print('Statistics weights: {}'.format(item.statistics_weights))
+        print('Expert weight: {}'.format(item.expert_weight))
         print('\nCATEGORY:\n---------')
         print('Categories: {}'.format(item.categories))
         print('Dimension: {}'.format(item.dimension))
@@ -213,7 +215,8 @@ class item:
         print('Launch count:{}'.format(self.launch_count))
         print('Answer history: {}'.format(self.answer_history))
         print('Answer range: {}'.format(self.answer_range))
-        print('Label: {}'.format(self.label))
+        print('Calcualted label: {}'.format(self.label))
+        print('Predicted label: {}'.format(self.predicted_label))
         print('Principal_category_list: {}'.format(self.principal_cat_list))
         print('Principal_abs_category_list: {}'.format(self.principal_abs_cat_list))
         print('Category vector: {}'.format(self.categoryvector))
@@ -222,6 +225,11 @@ class item:
         print('Expert value: {}'.format(self.expertvalue))
 
     def get_dataset_pair(self) -> tuple:
+        """Returns a pair with the full feature vector (categoryvector, statisticsvector, expertvector) and the label from the answer mean plus the statistics and expert fixed weights dot its vectors.
+
+        Returns:
+            tuple: (full feature_vector,calculated label)
+        """
         if self.launch_count > 0:
             self.update_all()
 

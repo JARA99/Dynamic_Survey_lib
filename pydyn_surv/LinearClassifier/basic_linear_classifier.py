@@ -9,19 +9,25 @@ import numpy as np
 from collections.abc import Iterable
 import random as rnd
 
+
 # Define blc predictor
 # --------------------
 
-def blc_predictor(w:np.ndarray,x:np.ndarray):
-    """([b]inary) [l]inear [c]lassifier predictor. Returns the sign of a prediction given a weigth (w) and a feauture vector (x).
+def blc_predictor(w:np.ndarray,x:np.ndarray) -> float:
+    """**B**inary **l**inear **c**lassifier predictor. Returns the sign of a prediction given a weigth (w) and a feauture vector (x).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
+    Parameters
+    ----------
+    w : np.ndarray
+         n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
 
-    Returns:
-        float: sign value
-    """
+    Returns
+    -------
+    float
+        sign value
+    """    
 
     score = w.dot(x)
 
@@ -37,16 +43,21 @@ def blc_predictor(w:np.ndarray,x:np.ndarray):
 # Define regression predictor
 # ---------------------------
 
-def reg_predictor(w:np.ndarray,x:np.ndarray):
-    """([reg]ression predictor. Returns the sign of a prediction given a weigth (w) and a feauture vector (x).
+def reg_predictor(w:np.ndarray,x:np.ndarray) -> float:
+    """**Reg**ression predictor. Returns the sign of a prediction given a weigth (w) and a feauture vector (x).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
+    Parameters
+    ----------
+    w : np.ndarray
+        n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
 
-    Returns:
-        float: sign value
-    """
+    Returns
+    -------
+    float
+        sign value
+    """    
 
     sign = w.dot(x)
     
@@ -56,7 +67,7 @@ def reg_predictor(w:np.ndarray,x:np.ndarray):
 # -------------
 
 def margin(w:np.ndarray,x:np.ndarray,y:float):
-    """Return the margin value for a given weight (w), feauture vector (x) and true prediction value (y).
+    """Return the **margin** value for a given weight (w), feauture vector (x) and true prediction value (y).
 
     Args:
         w (np.ndarray): n-dimensional weight vector
@@ -70,16 +81,22 @@ def margin(w:np.ndarray,x:np.ndarray,y:float):
 # Define loss and derivatives
 # ---------------------------
 
-def zero_one_loss(w:np.ndarray,x:np.ndarray,y:float):
-    """0-1 loss. Returns the 0-1 loss for a given weight (w), feauture vector (x) and true prediction value (y).
+def zero_one_loss(w:np.ndarray,x:np.ndarray,y:float) -> float:
+    """Returns the **0-1 loss** for a given weight (w), feauture vector (x) and true prediction value (y).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
-        y (float): true prediction value for x
+    Parameters
+    ----------
+    w : np.ndarray
+        n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
+    y : float
+        true prediction value for x
 
-    Returns:
-        float: 0-1 loss value
+    Returns
+    -------
+    float
+        0-1 loss value
     """
     mar = margin(w,x,y)
 
@@ -88,16 +105,22 @@ def zero_one_loss(w:np.ndarray,x:np.ndarray,y:float):
     else:
         return 0
 
-def hinge_loss(w:np.ndarray,x:np.ndarray,y:float):
-    """Hinge loss. Returns the hinge loss for a given weight (w), feauture vector (x) and true prediction value (y).
+def hinge_loss(w:np.ndarray,x:np.ndarray,y:float) -> float:
+    """Returns the **hinge loss** for a given weight (w), feauture vector (x) and true prediction value (y).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
-        y (float): true prediction value for x
+    Parameters
+    ----------
+    w : np.ndarray
+        n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
+    y : float
+        true prediction value for x
 
-    Returns:
-        float: Hinge loss value
+    Returns
+    -------
+    float
+        Hinge loss value
     """
 
     mar = margin(w,x,y)
@@ -106,16 +129,22 @@ def hinge_loss(w:np.ndarray,x:np.ndarray,y:float):
 
     return hinge
 
-def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
-    """Hinge loss derivative. Returns the derivative of the hinge loss for a given weight (w), feauture vector (x) and true prediction value (y).
+def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float) -> float:
+    """Returns the **derivative** of the **hinge loss** for a given weight (w), feauture vector (x) and true prediction value (y).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
-        y (float): true prediction value for x
+    Parameters
+    ----------
+    w : np.ndarray
+        n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
+    y : float
+        true prediction value for x
 
-    Returns:
-        float: Hinge loss derivative value
+    Returns
+    -------
+    float
+        Hinge loss derivative value
     """
 
     mar = margin(w,x,y)
@@ -125,16 +154,22 @@ def hinge_loss_derivative(w:np.ndarray,x:np.ndarray,y:float):
     if mar >= 1:
         return 0
 
-def squared_loss(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor):
-    """Squared loss. Returns the squared loss for a given weight (w), feauture vector (x) and true prediction value (y).
+def squared_loss(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor) -> float:
+    """Returns the **squared loss** for a given weight (w), feauture vector (x) and true prediction value (y).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
-        y (float): true prediction value for x
+    Parameters
+    ----------
+    w : np.ndarray
+        n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
+    y : float
+        true prediction value for x
 
-    Returns:
-        float: Squared loss value
+    Returns
+    -------
+    float
+        Squared loss value
     """
 
     score = predictor(w,x)
@@ -142,16 +177,22 @@ def squared_loss(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor):
 
     return residual**2
 
-def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor):
-    """Squared loss. Returns the squared loss derivative for a given weight (w), feauture vector (x) and true prediction value (y).
+def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_predictor) -> float:
+    """Returns the **squared loss derivative** for a given weight (w), feauture vector (x) and true prediction value (y).
 
-    Args:
-        w (np.ndarray): n-dimensional weight vector
-        x (np.ndarray): n-dimensional feauture vector
-        y (float): true prediction value for x
+    Parameters
+    ----------
+    w : np.ndarray
+        n-dimensional weight vector
+    x : np.ndarray
+        n-dimensional feauture vector
+    y : float
+        true prediction value for x
 
-    Returns:
-        float: Squared loss derivative value
+    Returns
+    -------
+    float
+        Squared loss derivative value
     """
 
     score = predictor(w,x)
@@ -162,7 +203,31 @@ def squared_loss_derivative(w:np.ndarray,x:np.ndarray,y:float,predictor = reg_pr
 # Gradient descent
 # ----------------
 
-def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,iterations = 500,verbose:bool = True,w:np.ndarray = None):
+def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,iterations = 500,verbose:bool = True,w:np.ndarray = None) -> np.ndarray:
+    """Execute the classic **gradient descent** for all the loss functions for a given training dataset and returns a trained weight.
+
+    Parameters
+    ----------
+    loss : function
+        Loss function.
+    dd_loss : function
+        Loss derivative function
+    training_dataset : Iterable
+        A list containing the (weight,label) pair for training.
+    eta : float, optional
+        The step size, by default 0.01
+    iterations : int, optional
+        The number of iterations, by default 500
+    verbose : bool, optional
+        True for verbose, by default True
+    w : np.ndarray, optional
+        A starting width np.ndarray, by default None
+
+    Returns
+    -------
+    np.ndarray
+        Trained width
+    """
     
     dimension = training_dataset[0][0].shape[0]
 
@@ -191,7 +256,30 @@ def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,ite
 # --------------------------
 
 def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:float = 0.1,iterations = 500,verbose:bool = True, w:np.ndarray = None):
-    
+    """Execute the **stocastic gradient descent** for all the loss functions for a given training dataset and returns a trained weight.
+
+    Parameters
+    ----------
+    loss : function
+        Loss function.
+    dd_loss : function
+        Loss derivative function
+    training_dataset : Iterable
+        A list containing the (weight,label) pair for training.
+    eta : float, optional
+        The step size, by default 0.01
+    iterations : int, optional
+        The number of iterations, by default 500
+    verbose : bool, optional
+        True for verbose, by default True
+    w : np.ndarray, optional
+        A starting width np.ndarray, by default None
+
+    Returns
+    -------
+    np.ndarray
+        Trained width
+    """
     dimension = training_dataset[0][0].shape[0]
     try:
         if w == None:
