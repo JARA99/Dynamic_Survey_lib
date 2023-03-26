@@ -11,7 +11,23 @@ from .basic_linear_classifier import blc_predictor
 # Generate dataset from weight
 # ----------------------------
 
-def generate_dataset(w:np.ndarray,n:int = 100,predictor = blc_predictor):
+def generate_dataset(w:np.ndarray,n:int = 100,predictor = blc_predictor) -> list:
+    """Generate a dataset using a "true width"
+
+    Parameters
+    ----------
+    w : np.ndarray
+        True width: you spect that the training width tends to this np.ndarray.
+    n : int, optional
+        Number of pairs in the training dataset, by default 100
+    predictor : function, optional
+        A predictor function, by default blc_predictor
+
+    Returns
+    -------
+    list
+        List containing training pairs (feauture vector, label).
+    """
     dataset = []
     dimension = w.shape[0]
 
@@ -24,7 +40,23 @@ def generate_dataset(w:np.ndarray,n:int = 100,predictor = blc_predictor):
     
     return dataset
 
-def generate_dataset_with_randomness(w:np.ndarray,n:int = 100,predictor = blc_predictor):
+def generate_dataset_with_randomness(w:np.ndarray,n:int = 100,predictor = blc_predictor) -> list:
+    """Generate a dataset using a "true width" and adding some error with randomness in the feauture vector.
+
+    Parameters
+    ----------
+    w : np.ndarray
+        True width: you spect that the training width tends to this np.ndarray.
+    n : int, optional
+        Number of pairs in the training dataset, by default 100
+    predictor : function, optional
+        A predictor function, by default blc_predictor
+
+    Returns
+    -------
+    list
+        List containing training pairs (feauture vector (with randomness), label).
+    """
     dataset = []
     dimension = w.shape[0]
 
@@ -39,7 +71,23 @@ def generate_dataset_with_randomness(w:np.ndarray,n:int = 100,predictor = blc_pr
     
     return dataset
 
-def generate_binary_features_dataset(w:np.ndarray,n:int = 100,predictor = blc_predictor):
+def generate_binary_features_dataset(w:np.ndarray,n:int = 100,predictor = blc_predictor) -> list:
+    """Generate a dataset using a "true width", but the feauture vector has only three posible values in each coordinate: `[-1,0,1]`.
+
+    Parameters
+    ----------
+    w : np.ndarray
+        True width: you spect that the training width tends to this np.ndarray.
+    n : int, optional
+        Number of pairs in the training dataset, by default 100
+    predictor : function, optional
+        A predictor function, by default blc_predictor
+
+    Returns
+    -------
+    list
+        List containing training pairs (feauture vector (with integers), label).
+    """
     dataset = []
     dimension = w.shape[0]
 
@@ -52,7 +100,23 @@ def generate_binary_features_dataset(w:np.ndarray,n:int = 100,predictor = blc_pr
     
     return dataset
 
-def generate_binary_features_dataset_with_randomness(w:np.ndarray,n:int = 100,predictor = blc_predictor):
+def generate_binary_features_dataset_with_randomness(w:np.ndarray,n:int = 100,predictor = blc_predictor) -> list:
+    """Generate a dataset using a "true width", but the feauture vector has only three posible values in each coordinate: `[-1,0,1]`. Also the label has a random error.
+
+    Parameters
+    ----------
+    w : np.ndarray
+        True width: you spect that the training width tends to this np.ndarray.
+    n : int, optional
+        Number of pairs in the training dataset, by default 100
+    predictor : function, optional
+        A predictor function, by default blc_predictor
+
+    Returns
+    -------
+    list
+        List containing training pairs (feauture vector (with integers), label (with error)).
+    """
     dataset = []
     dimension = w.shape[0]
 

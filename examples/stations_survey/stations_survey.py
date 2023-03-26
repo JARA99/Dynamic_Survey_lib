@@ -24,7 +24,8 @@ VERBOSE = False
 PREDICTOR = blc.reg_predictor
 GRADIENT_DEC = blc.gradient_descent
 
-SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-0.5,0.25,-0.25
+SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-2,0.25,-1
+EXPERT_W = 1
 
 def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx') -> list:
 
@@ -57,14 +58,12 @@ def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx') -> list:
 questions = get_questions_from_excel()
 item.item.set_categories(CATEGORIES)
 item.item.set_statistics_weights(SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W)
+item.item.set_expert_weight(EXPERT_W)
 
 seasons_survey = survey.survey(questions,'Cuestionario sobre estaciones del año')
 
 dim = len(CATEGORIES) #Categories plus 4 statistic features plus an expert feature.
-dim_ext = dim + 4 + 1 #Categories plus 4 statistic features plus an expert feature.
-w = np.zeros(dim_ext)
-w[-1] = 1
-w[dim:dim+4] = SELF_STD_W, SELF_COUNT_W, CAT_STD_W, CAT_COUNT_W
+w = np.zeros(dim)
 
 seasons_survey.set_predictor(PREDICTOR)
 seasons_survey.set_w(w)
@@ -80,7 +79,7 @@ while True:
     if instrucction == 'h':
         print(HELP_TEXT)
     elif instrucction == 'q':
-        seasons_survey.update_all()
+        seasons_survey.update_all(True)
         weights = seasons_survey.predicted_item_labels
         if any(weights) != 0:
             # print(weights)
@@ -96,7 +95,7 @@ while True:
             # print('random without weights = {}'.format(item_index))
             seasons_survey.launch_item(item_index)
     elif instrucction == 'a':
-        seasons_survey.update_all()
+        seasons_survey.update_all(True)
         weights = seasons_survey.predicted_item_labels
         if any(weights) != 0:
             # print(weights)
@@ -111,14 +110,14 @@ while True:
             item_index = rnd.choice(questions_indexes)
             # print('random without weights = {}'.format(item_index))
             seasons_survey.launch_item(item_index)
-        seasons_survey.update_all()
+        seasons_survey.update_all(True)
         w = GRADIENT_DEC(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
         seasons_survey.set_w(w)
     elif instrucction == 'i':
         seasons_survey.update_all()
         seasons_survey.print_info()
     elif instrucction == 't':
-        seasons_survey.update_all()
+        seasons_survey.update_all(True)
         w = GRADIENT_DEC(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
         seasons_survey.set_w(w)
     elif instrucction == 'b':
