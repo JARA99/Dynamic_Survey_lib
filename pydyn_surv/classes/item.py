@@ -168,14 +168,17 @@ class item:
 
         self.feature_vector = None
         
-        self.categoryvector = np.zeros(self.dimension)
-        self.categoryvector_abs = np.zeros(self.dimension)
+        self.categoryvector = []
+        self.categoryvector_abs = []
         # for i in secondary_cat:
         #     self.categoryvector[i] = secondary_value
         
         for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
-            self.categoryvector[i] = principal_value*(j/i)
-            self.categoryvector_abs[i] = principal_value
+            self.categoryvector.append(principal_value*(j/i))
+            self.categoryvector_abs.append(principal_value)
+        
+        self.categoryvector = np.array(self.categoryvector)
+        self.categoryvector_abs = np.array(self.categoryvector_abs)
 
         self.expertvalue = extra_points
 
