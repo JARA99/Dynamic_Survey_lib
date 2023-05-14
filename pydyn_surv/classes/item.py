@@ -275,8 +275,12 @@ class item:
 
             self.dataset_history.append((self.categoryvector,answer))
 
-            for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
-                item._category_answer_history[i-1].append(answer*(j/i))
+            # for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
+            #     item._category_answer_history[i-1].append(answer*(j/i))
+
+            for i in range(self.dimension):
+                sign = self.principal_cat_list[i]/self.principal_abs_cat_list[i]
+                item._category_answer_history[i].append(answer*sign)
             
         else:
             Warning('The answer was not recorded because it is out of range.')
