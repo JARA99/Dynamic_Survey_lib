@@ -168,14 +168,17 @@ class item:
 
         self.feature_vector = None
         
-        self.categoryvector = np.zeros(self.dimension)
-        self.categoryvector_abs = np.zeros(self.dimension)
+        self.categoryvector = []
+        self.categoryvector_abs = []
         # for i in secondary_cat:
         #     self.categoryvector[i] = secondary_value
         
         for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
-            self.categoryvector[i-1] = principal_value*(j/i)
-            self.categoryvector_abs[i-1] = principal_value
+            self.categoryvector.append(principal_value*(j/i))
+            self.categoryvector_abs.append(principal_value)
+        
+        self.categoryvector = np.array(self.categoryvector)
+        self.categoryvector_abs = np.array(self.categoryvector_abs)
 
         self.expertvalue = extra_points
 
@@ -272,8 +275,12 @@ class item:
 
             self.dataset_history.append((self.categoryvector,answer))
 
-            for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
-                item._category_answer_history[i-1].append(answer*(j/i))
+            # for i,j in zip(self.principal_abs_cat_list,self.principal_cat_list):
+            #     item._category_answer_history[i-1].append(answer*(j/i))
+
+            for i in range(self.dimension):
+                sign = self.principal_cat_list[i]/self.principal_abs_cat_list[i]
+                item._category_answer_history[i].append(answer*sign)
             
         else:
             Warning('The answer was not recorded because it is out of range.')
