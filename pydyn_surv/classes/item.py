@@ -18,7 +18,7 @@ class item:
     Returns
     -------
     pydyn_surv.item.item
-        Instance of the class pydyn_surv.item
+        Instance of the class pydyn_surv.item.item
     """
 
     _total_item_count:int = 0
