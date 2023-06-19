@@ -7,7 +7,9 @@ DEFAULT_PARAMETERS_DICT = {
     'answers_values':[-2,-1,0,1,2],
     'category_vector':[],
     'answer_range':(-2,2),
-    'expert_extra':0
+    'expert_extra':0,
+    'id':None,
+    'origin_survey':None,
 }
 
 class item:
@@ -63,9 +65,9 @@ class item:
             self.answers_values = DEFAULT_PARAMETERS_DICT['answers_values']
 
         try:
-            self.categoryvector = parameters_dict['category_vector']
+            self.category_vector = parameters_dict['category_vector']
         except:
-            self.categoryvector = DEFAULT_PARAMETERS_DICT['category_vector']
+            self.category_vector = DEFAULT_PARAMETERS_DICT['category_vector']
 
         try:
             self.answer_range = parameters_dict['answer_range']
@@ -77,19 +79,31 @@ class item:
         except:
             self.expertvalue = DEFAULT_PARAMETERS_DICT['expert_extra']
 
-        self.id = id_
-        self.origin_survey = origin_survey
+        try:
+            self.id = parameters_dict['id']
+        except:
+            self.id = DEFAULT_PARAMETERS_DICT['id']
+
+        try:
+            self.origin_survey = parameters_dict['origin_survey']
+        except:
+            self.origin_survey = DEFAULT_PARAMETERS_DICT['origin_survey']
+
+        if id_ is not None:
+            self.id = id_
+        if origin_survey is not None:
+            self.origin_survey = origin_survey
 
         self.launch_count = 0
         self.answer_history = []
         self.last_launch = None
 
-        self.categoryvector_abs = []
-        for cat in self.categoryvector:
-            self.categoryvector_abs.append(abs(cat))
+        self.category_vector_abs = []
+        for cat in self.category_vector:
+            self.category_vector_abs.append(abs(cat))
         
-        self.categoryvector = np.array(self.categoryvector)
-        self.categoryvector_abs = np.array(self.categoryvector_abs)
+        self.category_vector = np.array(self.category_vector)
+        self.category_vector_abs = np.array(self.category_vector_abs)
 
         self.mean_label = np.nan
         self.predicted_label = np.nan
@@ -114,7 +128,7 @@ class item:
         np.ndarray
             The feauture vector.
         """
-        return self.categoryvector
+        return self.category_vector
 
     def set_predicted_label(self,label:float) -> None:
         """Sets the predicted label to the input given.
@@ -198,9 +212,9 @@ class item:
         """Gets the dataset pair for training the model using the mean label. The dataset pair contains the pair (category vector, mean label).
 
         Returns:
-            tuple: (categoryvector, mean_label)
+            tuple: (category_vector, mean_label)
         """
-        return (self.categoryvector,self.mean_label)
+        return (self.category_vector,self.mean_label)
     
     def get_dataset_history(self) -> list:
         """Gets the dataset histoy for training the model. The dataset history contains the pairs (category vector, answer) from the historic answers.
@@ -210,7 +224,7 @@ class item:
         list
             The dataset history.
         """
-        dataset_history = [(self.categoryvector,answer) for answer in self.answer_history]
+        dataset_history = [(self.category_vector,answer) for answer in self.answer_history]
 
         return dataset_history
 
@@ -245,12 +259,12 @@ class item:
         print('Question text: ',self.question_text)
         print('Answers text: ',self.answers_text)
         print('Answers values: ',self.answers_values)
-        print('Category vector: ',self.categoryvector)
+        print('Category vector: ',self.category_vector)
         print('Answer range: ',self.answer_range)
         print('Expert value: ',self.expertvalue)
         print('Launch count: ',self.launch_count)
         print('Answer history: ',self.answer_history)
-        print('Category vector abs: ',self.categoryvector_abs)
+        print('Category vector abs: ',self.category_vector_abs)
         print('Mean label: ',self.mean_label)
         print('Predicted label: ',self.predicted_label)
         print('ID: ',self.id)

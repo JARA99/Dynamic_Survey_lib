@@ -2,7 +2,6 @@ import numpy as np
 from .item import item as item
 from . import funcs
 from .other_classes import pydyn_surv_list
-from copy import deepcopy
 
 LAUNCH_FORMAT = [
     '-----------------------------------------------------------\n {}',
@@ -60,8 +59,8 @@ class survey:
 
         self.label = np.nan
 
-        self.set_origin(deepcopy(origin))
-        self.set_offspring(deepcopy(offspring))
+        self.set_origin(origin)
+        self.set_offspring(offspring)
 
     def set_origin(self,origin:list) -> None:
         """Sets the origin for the survey.
@@ -71,11 +70,16 @@ class survey:
         origin : list
             A list containing the origin surveys, which must be of type survey.
         """
-        if not isinstance(origin,list):
-            origin = [origin]
+        if not isinstance(origin,pydyn_surv_list):
+            if not isinstance(origin,list):
+                origin = pydyn_surv_list([origin])
+            else:
+                origin = pydyn_surv_list(origin)
         self.origin = origin
         for srv in self.origin:
-            if not self in srv.offspring:
+            print(srv.offspring)
+            if self not in srv.offspring:
+                # print('Adding offspring to the origin survey.')	
                 srv.add_offspring(self)
     
     def set_offspring(self,offspring:list) -> None:
@@ -86,11 +90,14 @@ class survey:
         offspring : list
             A list containing the offspring surveys, which must be of type survey.
         """
-        if not isinstance(offspring,list):
-            offspring = [offspring]
+        if not isinstance(offspring,pydyn_surv_list):
+            if not isinstance(offspring,list):
+                offspring = pydyn_surv_list([offspring])
+            else:
+                offspring = pydyn_surv_list(offspring)
         self.offspring = offspring
         for srv in self.offspring:
-            if not self in srv.origin:
+            if self not in srv.origin:
                 srv.add_origin(self)
     
     def add_origin(self,origin) -> None:
@@ -101,8 +108,10 @@ class survey:
         origin : pydyn_surv.classes.survey
             The origin survey to be added.
         """
-        self.origin.append(origin)
-        if not self in origin.offspring:
+        if origin not in self.origin:
+            self.origin.append(origin)
+        if self not in origin.offspring:
+            # print('Adding offspring to the origin survey.')
             origin.add_offspring(self)
         
     
@@ -114,8 +123,10 @@ class survey:
         offspring : pydyn_surv.classes.survey
             The offspring survey to be added.
         """
-        self.offspring.append(offspring)
-        if not self in offspring.origin:
+        if offspring not in self.offspring:
+            self.offspring.append(offspring)
+        if self not in offspring.origin:
+            # print('Adding origin to the offspring survey.')
             offspring.add_origin(self)
 
     def set_origin_category(self,category) -> None:
@@ -311,11 +322,12 @@ class survey:
         item_.set_last_launch(self.launch_count)
 
         self.launch_count += 1
-        self.category_launch_count += item_.categoryvector_abs
+        self.category_launch_count += item_.category_vector_abs
         
         for i in range(self.dimension):
-            sign = item_.categoryvector[i]/item_.categoryvector_abs[i]
-            self.category_answer_history[i].append(ans_val*sign)
+            if item_.category_vector[i]:
+                sign = item_.category_vector[i]/item_.category_vector_abs[i]
+                self.category_answer_history[i].append(ans_val*sign)
             
 
         # except:
