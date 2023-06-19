@@ -10,3 +10,4 @@ This submodule contains the clases for building a survey, those are:
 
 from . import item
 from . import survey
+from . import funcs
