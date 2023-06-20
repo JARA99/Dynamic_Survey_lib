@@ -1,6 +1,5 @@
 import numpy as np
 from . import funcs
-import math
 
 DEFAULT_PARAMETERS_DICT = {
     'question':'',
@@ -97,7 +96,7 @@ class item:
 
         self.launch_count = 0
         self.answer_history = []
-        self.last_launch = -math.inf
+        self.last_launch = None
 
         self.category_vector_abs = []
         for cat in self.category_vector:
@@ -274,7 +273,7 @@ class item:
         """
         return self.last_launch
     
-    def get_origin_survey(self):
+    def get_origin_survey(self) -> pydyn_surv.classes.survey:
         """Gets the origin survey for the item.
 
         Returns

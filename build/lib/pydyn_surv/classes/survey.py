@@ -470,11 +470,7 @@ class survey:
 
     def get_surveys(self,force:bool = False, force_offspring = False) -> pydyn_surv_list:
         if self.condition() or force:
-            if any(self.get_items().probabilities()):
-                surveys = pydyn_surv_list([self])
-            else:
-                surveys = pydyn_surv_list([])
-                
+            surveys = pydyn_surv_list([self])
             for surv in self.offspring:
                 # print(surv.name)
                 offspring_survs = surv.get_surveys(force_offspring,force_offspring)

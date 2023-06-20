@@ -14,3 +14,4 @@ pydyn_surv/classes/funcs.py
 pydyn_surv/classes/item.py
 pydyn_surv/classes/other_classes.py
 pydyn_surv/classes/survey.py
+tests/test.py

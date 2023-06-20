@@ -52,14 +52,7 @@ def FUNC_APPLY_TO_ITEM_AND_SURVEY_HISTORY(self,func:callable,*args,**kargs):
         item_func = func(answer_history,*args,**kargs)
     except:
         item_func = np.nan
-
-    if np.isnan(srv_func_list).all():
-        srv_func = np.nan
-    else:
-        try:
-            srv_func = np.nanmean(srv_func_list)
-        except:
-            srv_func = np.nan
+    srv_func = np.nanmean(srv_func_list)
 
     return item_func, srv_func
 
@@ -70,10 +63,8 @@ def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated
     origin_srv = self.get_origin_survey()
     srv_launch_count = origin_srv.get_launch_count()
 
-    launched_since = np.nansum([srv_launch_count, -last_launch])
-    # print(launched_since)
+    launched_since = srv_launch_count - last_launch
     if launched_since < not_repeated_since:
-        # print("Not repeated since ",launched_since," launches")
         return 0
 
     item_std, surv_std = FUNC_APPLY_TO_ITEM_AND_SURVEY_HISTORY(self,np.std)
@@ -86,12 +77,7 @@ def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated
         item_count_percent = 0
         surv_count_percent = 0
 
-    prob_elements = [axis_move,self.expertvalue,item_std*std_weight,surv_std*cat_std_weight,item_count_percent*launch_count_weight,surv_count_percent*cat_launch_count_weight]
-
-    if np.isnan(prob_elements).all():
-        srv_func = np.nan
-    else:
-        prob = np.nansum(prob_elements)
+    prob = np.nansum([axis_move,self.expertvalue,item_std*std_weight,surv_std*cat_std_weight,item_count_percent*launch_count_weight,surv_count_percent*cat_launch_count_weight])
 
     if prob < 0:
         prob = 0

@@ -1,4 +1,4 @@
-Metadata-Version: 1.1
+Metadata-Version: 2.1
 Name: pydyn-surv
 Version: 0.1.0
 Summary: A package with tools for generating a dynamic survey using Machine Learning tools.
@@ -6,8 +6,6 @@ Home-page: https://github.com/JARA99/Dynamic_Survey_lib
 Author: Jorge Alejandro Rodríguez Aldana
 Author-email: jorgealejandro1999@gmail.com
 License: Proprietary License
-Description: UNKNOWN
-Platform: UNKNOWN
 Classifier: Development Status :: 2 - Pre-Alpha
 Classifier: Intended Audience :: Science/Research
 Classifier: License :: Other/Proprietary License

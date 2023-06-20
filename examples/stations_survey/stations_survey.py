@@ -1,5 +1,6 @@
 from pydyn_surv.classes import survey, item
 from pydyn_surv.LinearClassifier import basic_linear_classifier as blc
+from pydyn_surv.classes import funcs
 import pandas as pd
 import numpy as np
 import random as rnd
@@ -70,9 +71,12 @@ qs = get_questions_from_excel()
 
 # print(qs)
 
-seasons_survey = survey.survey(qs[:12],'Estaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['seasons'])
+seasons_survey = survey.survey(qs[:12],'Estaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['Estaciones'])
 
-subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['Invierno'])
+subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=CATEGORIES)
+
+seasons_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
+subseason_survey.set_probability_function_of_items(funcs.FUNC_FALSE)
 
 subseason_survey.add_origin(seasons_survey)
 seasons_survey.add_offspring(subseason_survey)
@@ -117,10 +121,10 @@ keep = True
 while keep:
     srvs = seasons_survey.get_surveys()
     print(srvs.names())
-    sel = rnd.choices(srvs,srvs.probabilities())[0]
+    sel = rnd.choices(srvs,srvs.probabilities(all_nanzero_to_one = False))[0]
 
     itms = sel.get_items()
-    sel_itm = rnd.choices(itms,itms.probabilities())[0]
+    sel_itm = rnd.choices(itms,itms.probabilities(all_nanzero_to_one = False))[0]
 
     sel.launch_item(sel_itm)
 
