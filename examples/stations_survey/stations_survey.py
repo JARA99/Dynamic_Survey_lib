@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import random as rnd
 
-
 CATEGORIES = ['Invierno','Primavera','Verano','Otoño']
 HELP_TEXT = '\
 This is a little help for navigating the script:\n\
@@ -76,10 +75,13 @@ seasons_survey = survey.survey(qs[:12],'Estaciones del año',predictor=PREDICTOR
 subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=CATEGORIES)
 
 seasons_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
-subseason_survey.set_probability_function_of_items(funcs.FUNC_FALSE)
+subseason_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
+
+# seasons_survey.set_origin(seasons_survey)
 
 subseason_survey.add_origin(seasons_survey)
-seasons_survey.add_offspring(subseason_survey)
+# seasons_survey.add_offspring(subseason_survey)
+
 
 # print(seasons_survey.get_items()[1].answers_text)
 # print(seasons_survey.get_items()[1].answers_values)
@@ -98,10 +100,10 @@ seasons_survey.add_offspring(subseason_survey)
 # # seasons_survey.offspring.append('hola')
 # print(seasons_survey.offspring == subseason_survey.offspring)
 
-print([i.name for i in seasons_survey.offspring])
-print([i.name for i in subseason_survey.offspring])
-print([i.name for i in seasons_survey.origin])
-print([i.name for i in subseason_survey.origin])
+# print('Season offspring:',[i.name for i in seasons_survey.offspring])
+# print('Subseason offspring:',[i.name for i in subseason_survey.offspring])
+# print('Season origin:',[i.name for i in seasons_survey.origin])
+# print('Subseason origin:',[i.name for i in subseason_survey.origin])
 
 # print([i.name for i in seasons_survey.launch_survey()])
 # # print(seasons_survey.get_items())
@@ -109,24 +111,21 @@ print([i.name for i in subseason_survey.origin])
 # print(seasons_survey.get_items().probabilities())
 
 
-def subseason_condition(self):
-    for origin in self.origin:
-        if origin.get_launch_count() > 4:
-            return True
-    return False
+subseason_survey.set_condition_function(funcs.CONDITION_ORIGIN_LAUNCH_COUNT_OVER)
 
-subseason_survey.set_condition_function(subseason_condition)
 
 keep = True
 while keep:
-    srvs = seasons_survey.get_surveys()
-    print(srvs.names())
-    sel = rnd.choices(srvs,srvs.probabilities(all_nanzero_to_one = False))[0]
+    srvs = seasons_survey.get_surveys(count = 2)
+    # print('SRVS:',srvs.names())
+    # [print('CAT:',s.origin_category) for s in srvs]
+    sel:survey.survey = rnd.choices(srvs,srvs.probabilities(all_nanzero_to_one = True))[0]
 
     itms = sel.get_items()
-    sel_itm = rnd.choices(itms,itms.probabilities(all_nanzero_to_one = False))[0]
+    sel_itm = rnd.choices(itms,itms.probabilities(all_nanzero_to_one = True))[0]
 
     sel.launch_item(sel_itm)
 
-
+    sel.train()
+    print('\n{} W = {}\n'.format(sel.name,sel.get_weight()))
 
