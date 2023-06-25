@@ -31,7 +31,6 @@ class survey:
         self.name = name
         self.training_dataset = []
         self.init_training_dataset = init_training_dataset
-        self.w = w
         self.predictor = predictor
         self.launch_format = launch_format
         self.item_by_id = {}
@@ -48,6 +47,12 @@ class survey:
 
         self.w_history = []
 
+        if w is None:
+            t_w = np.full(self.dimension,0)
+            self.set_w(t_w)
+        else:
+            self.set_w(w)
+
         self.set_condition_function(condition_function)
         self.set_probability_function(probability_function)
         self.set_train_function(train_function)
@@ -55,7 +60,7 @@ class survey:
         if not origin_category is None:
             self.set_origin_category(origin_category)
         else:
-            self.origin_category = name
+            self.set_origin_category(name)
 
         self.label = np.nan
 
@@ -75,9 +80,15 @@ class survey:
                 origin = pydyn_surv_list([origin])
             else:
                 origin = pydyn_surv_list(origin)
+        
+        if self in origin:
+            origin.remove(self)
+            print(Warning('Warning: The survey cannot be its own origin. It has been removed from the origin list.'))
+            
+
         self.origin = origin
+
         for srv in self.origin:
-            print(srv.offspring)
             if self not in srv.offspring:
                 # print('Adding offspring to the origin survey.')	
                 srv.add_offspring(self)
@@ -95,7 +106,13 @@ class survey:
                 offspring = pydyn_surv_list([offspring])
             else:
                 offspring = pydyn_surv_list(offspring)
+        
+        if self in offspring:
+            offspring.remove(self)
+            print(Warning('Warning: The survey cannot be its own offspring. It has been removed from the offspring list.'))
+
         self.offspring = offspring
+
         for srv in self.offspring:
             if self not in srv.origin:
                 srv.add_origin(self)
@@ -108,6 +125,9 @@ class survey:
         origin : pydyn_surv.classes.survey
             The origin survey to be added.
         """
+        if origin == self:
+            raise ValueError('A survey cannot be its own origin. You can create a copy of the survey and set it as the origin.')
+
         if origin not in self.origin:
             self.origin.append(origin)
         if self not in origin.offspring:
@@ -123,6 +143,9 @@ class survey:
         offspring : pydyn_surv.classes.survey
             The offspring survey to be added.
         """
+        if offspring == self:
+            raise ValueError('A survey cannot be its own offspring. You can create a copy of the survey and set it as the offspring.')
+
         if offspring not in self.offspring:
             self.offspring.append(offspring)
         if self not in offspring.origin:
@@ -137,7 +160,10 @@ class survey:
         category : pydyn_surv.classes.category
             The origin category for the survey.
         """
-        self.origin_category = category
+        if not isinstance(category,list):
+            self.origin_category = [category]
+        else:
+            self.origin_category = category
 
     def set_items(self,items:list) -> None:
         """Sets the items for the survey.
@@ -394,27 +420,28 @@ class survey:
 
         labels = []
 
-        if not isinstance(self.origin_category,list):
-            for origin in self.origin:
-                cat_index = origin.categories.index(self.origin_category)
-                feature_vector = np.zeros(origin.dimension)
+        # if not isinstance(self.origin_category,list):
+        #     for origin in self.origin:
+        #         cat_index = origin.categories.index(self.origin_category)
+        #         feature_vector = np.zeros(origin.dimension)
+        #         feature_vector[cat_index] = 1
+
+        #         label = origin.predictor(origin.w,feature_vector)
+        #         labels.append(label)
+        # else:
+        for origin in self.origin:
+            feature_vector = np.zeros(origin.dimension)
+            for cat in self.origin_category:
+                cat_index = origin.categories.index(cat)
                 feature_vector[cat_index] = 1
 
-                label = origin.predictor(origin.w,feature_vector)
-                labels.append(label)
-        else:
-            for origin in self.origin:
-                feature_vector = np.zeros(origin.dimension)
-                for cat in self.origin_category:
-                    cat_index = origin.categories.index(cat)
-                    feature_vector[cat_index] = 1
-
-                label = origin.predictor(origin.w,feature_vector)
-                labels.append(label)
+            label = origin.predictor(origin.w,feature_vector)
+            labels.append(label)
         
         try:
-            self.label = np.mean(labels)
+            self.label = np.nanmean(labels)
         except:
+            Warning('No label for survey {}.'.format(self.name))
             self.label = np.nan
 
         return self.label
@@ -422,7 +449,7 @@ class survey:
     def condition(self,*args,**kwargs) -> bool:
         """Returns True if the condition for launching the survey is met, False otherwise. This method is a wrapper for the _condition method, which is setted by the set_condition_function method.
         """
-        return self._condition(self,*args,**kwargs)
+        return self._condition(self,**kwargs)
     
     def set_condition_function(self,condition_function:callable) -> None:
         self._condition = condition_function
@@ -456,7 +483,8 @@ class survey:
     def train(self,*args,**kwargs) -> np.ndarray:
         """Trains the survey. This method is a wrapper for the _train method, which is the one that actually trains the survey.
         """
-        self._train(self,*args,**kwargs)
+        trained_w = self._train(self,*args,**kwargs)
+        self.set_w(trained_w)
     
     def set_train_function(self,train_function:callable) -> None:
         """Sets the train function for the survey. The train function must be a callable that returns a width. It must be able to handle the survey instance as an argument.
@@ -468,8 +496,8 @@ class survey:
         """
         self._train = train_function
 
-    def get_surveys(self,force:bool = False, force_offspring = False) -> pydyn_surv_list:
-        if self.condition() or force:
+    def get_surveys(self,force:bool = False, force_offspring = False,*args,**kwargs) -> pydyn_surv_list:
+        if self.condition(*args,**kwargs) or force:
             if any(self.get_items().probabilities()):
                 surveys = pydyn_surv_list([self])
             else:
@@ -477,7 +505,7 @@ class survey:
                 
             for surv in self.offspring:
                 # print(surv.name)
-                offspring_survs = surv.get_surveys(force_offspring,force_offspring)
+                offspring_survs = surv.get_surveys(force_offspring,force_offspring,*args,**kwargs)
                 surveys += offspring_survs
         else:
             surveys = pydyn_surv_list([])
