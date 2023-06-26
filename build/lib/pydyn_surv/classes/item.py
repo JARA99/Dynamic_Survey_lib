@@ -1,6 +1,5 @@
 import numpy as np
 from . import funcs
-import math
 
 DEFAULT_PARAMETERS_DICT = {
     'question':'',
@@ -33,25 +32,6 @@ class item:
         """
         for item_ in item.instances:
             item_.set_probability_function(func)
-
-    def get_instance_by_id(id_):
-        """Returns the item instance with the given id.
-
-        Parameters
-        ----------
-        id_ : int
-            Id of the item to be returned.
-
-        Returns
-        -------
-        pydyn_surv.item.item
-            Item instance with the given id.
-        """
-        item_list = []
-        for item_ in item.instances:
-            if item_.id == id_:
-                item_list.append(item_)
-        return item_list
 
     def __init__(self,parameters_dict:dict = DEFAULT_PARAMETERS_DICT,id_ = None,origin_survey = None, probability_function = funcs.FUNC_LIKERT_ITEM_PROBABILITY):
         """Creates an instance of an pydyn_surv.item.
@@ -116,7 +96,7 @@ class item:
 
         self.launch_count = 0
         self.answer_history = []
-        self.last_launch = -math.inf
+        self.last_launch = None
 
         self.category_vector_abs = []
         for cat in self.category_vector:
@@ -173,9 +153,6 @@ class item:
     def update_mean_label(self) -> None:
         """Calculates the mean label for the item and assign it to the instance atribute.	
         """
-        if self.answer_history == []:
-            self.mean_label = np.nan
-            return
         try:
             self.mean_label = np.mean(self.answer_history)
         except:
@@ -296,7 +273,7 @@ class item:
         """
         return self.last_launch
     
-    def get_origin_survey(self):
+    def get_origin_survey(self) -> pydyn_surv.classes.survey:
         """Gets the origin survey for the item.
 
         Returns
@@ -306,7 +283,7 @@ class item:
         """
         return self.origin_survey
 
-    def print_info(self):
+    def print_values(self):
         """Prints the instance attributes stored values into the terminal.
         """
         print('Question text: ',self.question_text)

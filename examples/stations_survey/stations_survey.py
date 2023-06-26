@@ -1,21 +1,20 @@
 from pydyn_surv.classes import survey, item
 from pydyn_surv.LinearClassifier import basic_linear_classifier as blc
+from pydyn_surv.classes import funcs
 import pandas as pd
 import numpy as np
 import random as rnd
 
-
 CATEGORIES = ['Invierno','Primavera','Verano','Otoño']
 HELP_TEXT = '\
 This is a little help for navigating the script:\n\
-    h show this [h]elp\n\
-    q for launching a [q]uestion\n\
-    a for launching a question [a]nd training the model after\n\
-    i for printing [i]nformation\n\
-    ii for printing information of the 0 item\n\
-    t for [t]raining the model\n\
-    b for [b]reak\n'
-HELP_TEXT_SUMARY = '[h,q,a,i,ii,t,b]: '
+    h       show this [h]elp\n\
+    q       for launching a question [a]nd training the model after\n\
+    i       for printing [i]nformation\n\
+    ii n    for printing information of the item with id=n\n\
+    b       for [b]reak\n'
+HELP_TEXT_SUMARY = '[h,q,i,ii n,b]: '
+
 ETA = 0.1
 ETA_ST = 1
 ITER = 2000
@@ -24,10 +23,10 @@ VERBOSE = False
 PREDICTOR = blc.reg_predictor
 GRADIENT_DEC = blc.gradient_descent
 
-SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-2,0.25,-1
-EXPERT_W = 1
+ANSWERS = ['Muy en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Muy de acuerdo']
+ANSWER_VALUES = [-2,-1,0,1,2]
 
-def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx') -> list:
+def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx',dimension:int = 4) -> list:
 
     def str_to_list(string):
         lst = string.split(',')
@@ -48,85 +47,95 @@ def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx') -> list:
 
         tdict['question'] = question_row['Pregunta']
         tdict['answers'] = list(answers_df.loc[question_row['Grupo de respuestas']])
-        tdict['principal_cat_list'] = question_row['Categorías']
+        tdict['answers_values'] = ANSWER_VALUES
+        tdict['category_vector'] = np.zeros(dimension)
         tdict['expert_extra'] = question_row['Punteo extra']
 
-        questions.append(tdict)
+        for cat in question_row['Categorías']:
+            coord = abs(cat) - 1
+            if cat > 0:
+                tdict['category_vector'][coord] = 1
+            else:
+                tdict['category_vector'][coord] = -1
+
+        # tdict['category_unit_vector'] = tdict['category_vector']/np.linalg.norm(tdict['category_vector'])
+        # tdict['category_vector'] = tdict['category_unit_vector']
+
+        titem = item.item(tdict,index)
+
+        questions.append(titem)
     
     return questions
 
-questions = get_questions_from_excel()
-item.item.set_categories(CATEGORIES)
-item.item.set_statistics_weights(SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W)
-item.item.set_expert_weight(EXPERT_W)
+qs = get_questions_from_excel()
+# print(qs)
 
-seasons_survey = survey.survey(questions,'Cuestionario sobre estaciones del año')
+seasons_survey = survey.survey(qs[:12],'Estaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['Estaciones'])
+subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=CATEGORIES)
 
-dim = len(CATEGORIES) #Categories plus 4 statistic features plus an expert feature.
-w = np.zeros(dim)
+seasons_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
+subseason_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
 
-seasons_survey.set_predictor(PREDICTOR)
-seasons_survey.set_w(w)
+subseason_survey.add_origin(seasons_survey)
+# seasons_survey.add_offspring(subseason_survey)
 
-questions_indexes = list(np.arange(seasons_survey.item_amount))
-# print(questions_indexes)
+# print('Season offspring:',[i.name for i in seasons_survey.offspring])
+# print('Subseason offspring:',[i.name for i in subseason_survey.offspring])
+# print('Season origin:',[i.name for i in seasons_survey.origin])
+# print('Subseason origin:',[i.name for i in subseason_survey.origin])
 
-print(HELP_TEXT)
+subseason_survey.set_condition_function(funcs.CONDITION_ORIGIN_LAUNCH_COUNT_OVER)
+# subseason_survey.set_condition_function(funcs.FUNC_FALSE)
 
-while True:
-    instrucction = input(HELP_TEXT_SUMARY)
+def launch_q():
+    srvs = seasons_survey.get_surveys(count = 3)
+    sel:survey.survey = rnd.choices(srvs,srvs.probabilities(all_nanzero_to_one = True))[0]
 
-    if instrucction == 'h':
+    itms = sel.get_items()
+    sel_itm = rnd.choices(itms,itms.probabilities(all_nanzero_to_one = True))[0]
+
+    sel.launch_item(sel_itm)
+
+    sel.train()
+    print('\n{} W = {}\n'.format(sel.name,np.round(sel.get_weight(),2)))
+
+def print_info():
+    print('Seasons survey:\n-----------------\n')
+    seasons_survey.update_all()
+    seasons_survey.print_info()
+    print('\n')
+    print('Subseasons survey:\n-----------------\n')
+    subseason_survey.update_all()
+    subseason_survey.print_info()
+    print('\n')
+
+def print_i_info(id_):
+    items = item.item.get_instance_by_id(id_)
+    seasons_survey.update_all()
+    subseason_survey.update_all()
+    for item_ in items:
+        print('{}]'.format(item_.id))
+        print('-----')
+        item_.print_info()
+
+help_key = 'h'
+question_key = 'q'
+info_key = 'i'
+info_item_key = 'ii '
+break_key = 'b'
+
+# print(item.item.instances)
+
+keep = True
+while keep:
+    next_action = input(HELP_TEXT_SUMARY)
+    if next_action == help_key:
         print(HELP_TEXT)
-    elif instrucction == 'q':
-        seasons_survey.update_all(True)
-        weights = seasons_survey.predicted_item_labels
-        if any(weights) != 0:
-            # print(weights)
-            min_weight = min(weights)
-            if min_weight < 0:
-                item_index = rnd.choices(questions_indexes,weights=list(np.array(weights) + abs(min_weight)),k=1)
-            else:
-                item_index = rnd.choices(questions_indexes,weights=weights,k=1)
-            # print('random with weights = {}'.format(item_index))
-            seasons_survey.launch_item(item_index[0])
-        else:
-            item_index = rnd.choice(questions_indexes)
-            # print('random without weights = {}'.format(item_index))
-            seasons_survey.launch_item(item_index)
-    elif instrucction == 'a':
-        seasons_survey.update_all(True)
-        weights = seasons_survey.predicted_item_labels
-        if any(weights) != 0:
-            # print(weights)
-            min_weight = min(weights)
-            if min_weight < 0:
-                item_index = rnd.choices(questions_indexes,weights=list(np.array(weights) + abs(min_weight)),k=1)
-            else:
-                item_index = rnd.choices(questions_indexes,weights=weights,k=1)
-            # print('random with weights = {}'.format(item_index))
-            seasons_survey.launch_item(item_index[0])
-        else:
-            item_index = rnd.choice(questions_indexes)
-            # print('random without weights = {}'.format(item_index))
-            seasons_survey.launch_item(item_index)
-        seasons_survey.update_all(True)
-        w = GRADIENT_DEC(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
-        seasons_survey.set_w(w)
-    elif instrucction == 'i':
-        seasons_survey.update_all()
-        seasons_survey.print_info()
-    elif instrucction == 't':
-        seasons_survey.update_all(True)
-        w = GRADIENT_DEC(blc.squared_loss,blc.squared_loss_derivative,seasons_survey.training_dataset,ETA,ITER,VERBOSE,w)
-        seasons_survey.set_w(w)
-    elif instrucction == 'b':
-        break
-    elif instrucction == 'ii':
-        seasons_survey.print_item_info(0)
-    else:
-        print(HELP_TEXT)
-
-        
-
-
+    elif next_action == question_key:
+        launch_q()
+    elif next_action == info_key:
+        print_info()
+    elif next_action[:len(info_item_key)] == info_item_key:
+        print_i_info(int(next_action[len(info_item_key):]))
+    elif next_action == break_key:
+        keep = False
