@@ -8,14 +8,13 @@ import random as rnd
 CATEGORIES = ['Invierno','Primavera','Verano','Otoño']
 HELP_TEXT = '\
 This is a little help for navigating the script:\n\
-    h show this [h]elp\n\
-    q for launching a [q]uestion\n\
-    a for launching a question [a]nd training the model after\n\
-    i for printing [i]nformation\n\
-    ii for printing information of the 0 item\n\
-    t for [t]raining the model\n\
-    b for [b]reak\n'
-HELP_TEXT_SUMARY = '[h,q,a,i,ii,t,b]: '
+    h       show this [h]elp\n\
+    q       for launching a question [a]nd training the model after\n\
+    i       for printing [i]nformation\n\
+    ii n    for printing information of the item with id=n\n\
+    b       for [b]reak\n'
+HELP_TEXT_SUMARY = '[h,q,i,ii n,b]: '
+
 ETA = 0.1
 ETA_ST = 1
 ITER = 2000
@@ -59,6 +58,8 @@ def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx',dimension:int 
             else:
                 tdict['category_vector'][coord] = -1
 
+        # tdict['category_unit_vector'] = tdict['category_vector']/np.linalg.norm(tdict['category_vector'])
+        # tdict['category_vector'] = tdict['category_unit_vector']
 
         titem = item.item(tdict,index)
 
@@ -67,58 +68,27 @@ def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx',dimension:int 
     return questions
 
 qs = get_questions_from_excel()
-
 # print(qs)
 
 seasons_survey = survey.survey(qs[:12],'Estaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['Estaciones'])
-
 subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=CATEGORIES)
 
 seasons_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
 subseason_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
 
-# seasons_survey.set_origin(seasons_survey)
-
 subseason_survey.add_origin(seasons_survey)
 # seasons_survey.add_offspring(subseason_survey)
-
-
-# print(seasons_survey.get_items()[1].answers_text)
-# print(seasons_survey.get_items()[1].answers_values)
-# print([i.category_vector for i in seasons_survey.items])
-# seasons_survey.print_info()
-# print(seasons_survey)
-# print(subseason_survey)
-# print(seasons_survey == subseason_survey)
-# print(seasons_survey.get_items().ids())
-
-# print([i.name for i in seasons_survey.offspring])
-# print([i.name for i in subseason_survey.offspring])
-# # seasons_survey.add_offspring(seasons_survey)
-
-# seasons_survey.offspring = [subseason_survey]
-# # seasons_survey.offspring.append('hola')
-# print(seasons_survey.offspring == subseason_survey.offspring)
 
 # print('Season offspring:',[i.name for i in seasons_survey.offspring])
 # print('Subseason offspring:',[i.name for i in subseason_survey.offspring])
 # print('Season origin:',[i.name for i in seasons_survey.origin])
 # print('Subseason origin:',[i.name for i in subseason_survey.origin])
 
-# print([i.name for i in seasons_survey.launch_survey()])
-# # print(seasons_survey.get_items())
-# print(seasons_survey.get_items().questions())
-# print(seasons_survey.get_items().probabilities())
-
-
 subseason_survey.set_condition_function(funcs.CONDITION_ORIGIN_LAUNCH_COUNT_OVER)
+# subseason_survey.set_condition_function(funcs.FUNC_FALSE)
 
-
-keep = True
-while keep:
-    srvs = seasons_survey.get_surveys(count = 2)
-    # print('SRVS:',srvs.names())
-    # [print('CAT:',s.origin_category) for s in srvs]
+def launch_q():
+    srvs = seasons_survey.get_surveys(count = 3)
     sel:survey.survey = rnd.choices(srvs,srvs.probabilities(all_nanzero_to_one = True))[0]
 
     itms = sel.get_items()
@@ -127,5 +97,45 @@ while keep:
     sel.launch_item(sel_itm)
 
     sel.train()
-    print('\n{} W = {}\n'.format(sel.name,sel.get_weight()))
+    print('\n{} W = {}\n'.format(sel.name,np.round(sel.get_weight(),2)))
 
+def print_info():
+    print('Seasons survey:\n-----------------\n')
+    seasons_survey.update_all()
+    seasons_survey.print_info()
+    print('\n')
+    print('Subseasons survey:\n-----------------\n')
+    subseason_survey.update_all()
+    subseason_survey.print_info()
+    print('\n')
+
+def print_i_info(id_):
+    items = item.item.get_instance_by_id(id_)
+    seasons_survey.update_all()
+    subseason_survey.update_all()
+    for item_ in items:
+        print('{}]'.format(item_.id))
+        print('-----')
+        item_.print_info()
+
+help_key = 'h'
+question_key = 'q'
+info_key = 'i'
+info_item_key = 'ii '
+break_key = 'b'
+
+# print(item.item.instances)
+
+keep = True
+while keep:
+    next_action = input(HELP_TEXT_SUMARY)
+    if next_action == help_key:
+        print(HELP_TEXT)
+    elif next_action == question_key:
+        launch_q()
+    elif next_action == info_key:
+        print_info()
+    elif next_action[:len(info_item_key)] == info_item_key:
+        print_i_info(int(next_action[len(info_item_key):]))
+    elif next_action == break_key:
+        keep = False
