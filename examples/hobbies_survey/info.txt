@@ -1,0 +1,427 @@
+
+SURVEY INFO:
+------------
+Survey name: Hobbies
+Categories: ['Actividades Físicas', 'Artes Creativas', 'Actividades Intelectuales', 'Coleccionismo']
+Training dataset:
+
+Item amount: 20
+Predicted item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+ nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan
+ nan nan]
+Weight: [0 0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: []
+Origin category: ['Hobbies']
+Offspring: ['Actividades Físicas', 'Artes Creativas', 'Actividades Intelectuales', 'Coleccionismo']
+Weight history: [array([0, 0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Actividades Físicas
+Categories: ['Deportes de equipo', 'Actividades al aire libre', 'Fitness y entrenamiento personal', 'Deportes acuáticos', 'Artes marciales']
+Training dataset:
+
+Item amount: 15
+Predicted item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Hobbies']
+Origin category: ['Actividades Físicas']
+Offspring: ['Deportes de equipo', 'Actividades al aire libre', 'Fitness y entrenamiento personal', 'Deportes acuáticos', 'Artes marciales']
+Weight history: [array([0, 0, 0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Artes Creativas
+Categories: ['Pintura y dibujo', 'Música', 'Escritura', 'Danza y expresión corporal', 'Artesanía y manualidades']
+Training dataset:
+
+Item amount: 15
+Predicted item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Hobbies']
+Origin category: ['Artes Creativas']
+Offspring: ['Pintura y dibujo', 'Música', 'Escritura', 'Danza y expresión corporal', 'Artesanía y manualidades']
+Weight history: [array([0, 0, 0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Actividades Intelectuales
+Categories: ['Resolución de puzzles', 'Lectura y escritura', 'Aprendizaje de idiomas', 'Ciencia y tecnología', 'Filosofía y debate']
+Training dataset:
+
+Item amount: 15
+Predicted item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Hobbies']
+Origin category: ['Actividades Intelectuales']
+Offspring: ['Resolución de puzzles', 'Lectura y escritura', 'Aprendizaje de idiomas', 'Ciencia y tecnología', 'Filosofía y debate']
+Weight history: [array([0, 0, 0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Coleccionismo
+Categories: ['Coleccionismo de libros', 'Coleccionismo de juguetes', 'Coleccionismo de objetos deportivos', 'Coleccionismo de música', 'Coleccionismo de automóviles']
+Training dataset:
+
+Item amount: 15
+Predicted item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Hobbies']
+Origin category: ['Coleccionismo']
+Offspring: ['Coleccionismo de libros', 'Coleccionismo de juguetes', 'Coleccionismo de objetos deportivos', 'Coleccionismo de música', 'Coleccionismo de automóviles']
+Weight history: [array([0, 0, 0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Deportes de equipo
+Categories: ['Fútbol', 'Baloncesto', 'Voleibol']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Físicas']
+Origin category: ['Deportes de equipo']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Actividades al aire libre
+Categories: ['Senderismo', 'Ciclismo', 'Escalada']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Físicas']
+Origin category: ['Actividades al aire libre']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Fitness y entrenamiento personal
+Categories: ['Yoga', 'Pilates', 'Entrenamiento de fuerza']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Físicas']
+Origin category: ['Fitness y entrenamiento personal']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Deportes acuáticos
+Categories: ['Natación', 'Surf', 'Buceo']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Físicas']
+Origin category: ['Deportes acuáticos']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Artes marciales
+Categories: ['Karate', 'Judo', 'Taekwondo']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Físicas']
+Origin category: ['Artes marciales']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Pintura y dibujo
+Categories: ['Acuarela', 'Óleo', 'Dibujo a lápiz']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Artes Creativas']
+Origin category: ['Pintura y dibujo']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Música
+Categories: ['Piano', 'Guitarra', 'Canto']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Artes Creativas']
+Origin category: ['Música']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Escritura
+Categories: ['Poesía', 'Novela', 'Periodismo']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Artes Creativas']
+Origin category: ['Escritura']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Danza y expresión corporal
+Categories: ['Ballet', 'Hip-hop', 'Bailes latinos']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Artes Creativas']
+Origin category: ['Danza y expresión corporal']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Artesanía y manualidades
+Categories: ['Joyería', 'Cerámica', 'Tejido']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Artes Creativas']
+Origin category: ['Artesanía y manualidades']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Resolución de puzzles
+Categories: ['Rompecabezas', 'Sudokus', 'Crucigramas']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Intelectuales']
+Origin category: ['Resolución de puzzles']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Lectura y escritura
+Categories: ['Novela', 'Poesía', 'Ensayo']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Intelectuales']
+Origin category: ['Lectura y escritura']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Aprendizaje de idiomas
+Categories: ['Inglés', 'Francés', 'Mandarín']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Intelectuales']
+Origin category: ['Aprendizaje de idiomas']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Ciencia y tecnología
+Categories: ['Astronomía', 'Robótica', 'Programación']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Intelectuales']
+Origin category: ['Ciencia y tecnología']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Filosofía y debate
+Categories: ['Ética', 'Filosofía', 'Política']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Actividades Intelectuales']
+Origin category: ['Filosofía y debate']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Coleccionismo de libros
+Categories: ['Literatura clásica', 'Ciencia ficción', 'Poesía']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Coleccionismo']
+Origin category: ['Coleccionismo de libros']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Coleccionismo de juguetes
+Categories: ['Figuras de acción', 'Muñecas', 'Juegos de mesa']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Coleccionismo']
+Origin category: ['Coleccionismo de juguetes']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Coleccionismo de objetos deportivos
+Categories: ['Camisetas de equipos', 'Autógrafos', 'Trofeos']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Coleccionismo']
+Origin category: ['Coleccionismo de objetos deportivos']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Coleccionismo de música
+Categories: ['Discos de vinilo', 'Instrumentos musicales', 'Partituras']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Coleccionismo']
+Origin category: ['Coleccionismo de música']
+Offspring: []
+Weight history: [array([0, 0, 0])]
+
+SURVEY INFO:
+------------
+Survey name: Coleccionismo de automóviles
+Categories: ['Coches clásicos', 'Coches deportivos', 'Miniaturas']
+Training dataset:
+
+Item amount: 9
+Predicted item labels: [nan nan nan nan nan nan nan nan nan]
+Probabilities: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+Calculated item labels: [nan nan nan nan nan nan nan nan nan]
+Weight: [0 0 0]
+Predictor: <function reg_predictor at 0x7f74cf76f1f0>
+Origin: ['Coleccionismo']
+Origin category: ['Coleccionismo de automóviles']
+Offspring: []
+Weight history: [array([0, 0, 0])]

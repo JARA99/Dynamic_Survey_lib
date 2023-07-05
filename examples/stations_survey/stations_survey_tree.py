@@ -70,13 +70,13 @@ def get_questions_from_excel(excel_file:str = 'Questionarie.xlsx',dimension:int 
 qs = get_questions_from_excel()
 # print(qs)
 
-seasons_survey = survey.survey(qs,'Estaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['Estaciones'])
-# subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=CATEGORIES)
+seasons_survey = survey.survey(qs[:12],'Estaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=['Estaciones'])
+subseason_survey = survey.survey(qs[12:],'Subestaciones del año',predictor=PREDICTOR,categories=CATEGORIES,origin_category=CATEGORIES)
 
 seasons_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
-# subseason_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
+subseason_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS)
 
-# subseason_survey.add_origin(seasons_survey)
+subseason_survey.add_origin(seasons_survey)
 # seasons_survey.add_offspring(subseason_survey)
 
 # print('Season offspring:',[i.name for i in seasons_survey.offspring])
@@ -89,10 +89,10 @@ seasons_survey.set_probability_function_of_items(funcs.FUNC_LIKERT_ITEM_PROBABIL
 
 def launch_q():
     srvs = seasons_survey.get_surveys(count = 3)
-    sel:survey.survey = rnd.choices(srvs,srvs.probabilities(all_zero_to_one = True))[0]
+    sel:survey.survey = rnd.choices(srvs,srvs.probabilities(all_nanzero_to_one = True))[0]
 
     itms = sel.get_items()
-    sel_itm = rnd.choices(itms,itms.probabilities(all_zero_to_one = True))[0]
+    sel_itm = rnd.choices(itms,itms.probabilities(all_nanzero_to_one = True))[0]
 
     sel.launch_on_terminal(sel_itm)
 
@@ -104,15 +104,15 @@ def print_info():
     seasons_survey.update_all()
     seasons_survey.print_info()
     print('\n')
-    # print('Subseasons survey:\n-----------------\n')
-    # subseason_survey.update_all()
-    # subseason_survey.print_info()
-    # print('\n')
+    print('Subseasons survey:\n-----------------\n')
+    subseason_survey.update_all()
+    subseason_survey.print_info()
+    print('\n')
 
 def print_i_info(id_):
     items = item.item.get_instance_by_id(id_)
     seasons_survey.update_all()
-    # subseason_survey.update_all()
+    subseason_survey.update_all()
     for item_ in items:
         print('{}]'.format(item_.id))
         print('-----')
