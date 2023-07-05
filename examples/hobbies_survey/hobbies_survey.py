@@ -4,8 +4,7 @@ import definitions as DEFS
 import pandas as pd
 import numpy as np
 import random as rnd
-from typing import List, Union
-import math
+from typing import List
 
 ITEM_PROB_DEFS = {
     "axis_move":2,
@@ -54,13 +53,13 @@ def l1_condition(self:survey.survey) -> bool:
     initial_condition = funcs.CONDITION_ORIGIN_LAUNCH_COUNT_OVER(self,4)
     if initial_condition:
         self_label = self.get_self_label()
-        if self_label > 1:
+        if self_label > 0.5:
             return True
     else:
         return False
 def l2_condition(self:survey.survey) -> bool:
     self_label = self.get_self_label()
-    if self_label > 1:
+    if self_label > 0.5:
         return True
     else:
         return False
@@ -244,24 +243,31 @@ def print_i_info(id_):
         print('-----')
         item_.print_info()
 
-help_key = 'h'
-question_key = 'q'
-info_key = 'si'
-info_item_key = 'ii '
-break_key = 'b'
 
 # print(item.item.instances)
 
-keep = True
-while keep:
-    next_action = input(HELP_TEXT_SUMARY)
-    if next_action == help_key:
-        print(HELP_TEXT)
-    elif next_action == question_key:
-        launch_q()
-    elif next_action == info_key:
-        print_info()
-    elif next_action[:len(info_item_key)] == info_item_key:
-        print_i_info(next_action[len(info_item_key):])
-    elif next_action == break_key:
-        keep = False
+if __name__=='__main__':
+
+    help_key = 'h'
+    question_key = 'q'
+    info_key = 'si'
+    info_item_key = 'ii '
+    break_key = 'b'
+
+    keep = True
+    while keep:
+        next_action = input(HELP_TEXT_SUMARY)
+        if next_action == help_key:
+            print(HELP_TEXT)
+        elif next_action == question_key:
+            try:
+                launch_q()
+            except:
+                print('No muestras preferencias por ninguna de las categorías disponibles en esta encuesta.')
+                keep = False
+        elif next_action == info_key:
+            print_info()
+        elif next_action[:len(info_item_key)] == info_item_key:
+            print_i_info(next_action[len(info_item_key):])
+        elif next_action == break_key:
+            keep = False
