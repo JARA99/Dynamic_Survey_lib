@@ -13,6 +13,7 @@ LAUNCH_FORMAT = [
 class survey:
 
     instances = []
+    instances_dict = dict()
     
     def get_total_launches(*args) -> int:
         """Returns the total amount of launches across all surveys.
@@ -23,8 +24,8 @@ class survey:
             The total amount of launches across all surveys.
         """
         total = 0
-        for survey in survey.instances:
-            total += survey.launch_count
+        for survey_ in survey.instances:
+            total += survey_.launch_count
         return total
 
     def __init__(self,items:list = [],name:str = '',init_training_dataset:list = None,w:np.ndarray = None,predictor = funcs.PREDICTOR,launch_format = LAUNCH_FORMAT,categories:list = [],origin:list = [],offspring:list = [],origin_category = None, condition_function:callable = funcs.FUNC_TRUE, probability_function:callable = funcs.FUNC_TRUE, train_function:callable = funcs.TRAIN_FUNCTION) -> None:
@@ -70,6 +71,9 @@ class survey:
 
         self.last_condition_state = None
 
+        # print(self.name)
+        survey.instances_dict[self.name] = self
+
     def set_origin(self,origin:list) -> None:
         """Sets the origin for the survey.
 
@@ -78,6 +82,8 @@ class survey:
         origin : list
             A list containing the origin surveys, which must be of type survey.
         """
+        if origin is None:
+            origin = pydyn_surv_list()
         if not isinstance(origin,pydyn_surv_list):
             if not isinstance(origin,list):
                 origin = pydyn_surv_list([origin])
@@ -409,6 +415,7 @@ class survey:
         # self.launch_format = launch_format
         print('\nSURVEY INFO:\n------------')
         print('Survey name: {}'.format(self.name))
+        print('Categories: {}'.format(self.categories))
         print('Training dataset:')
         print(*('   {} -> {}\n'.format(x,y) for x,y in self.training_dataset),sep='')
         print('Item amount: {}'.format(self.item_amount))
@@ -465,7 +472,7 @@ class survey:
     def condition(self,*args,**kwargs) -> bool:
         """Returns True if the condition for launching the survey is met, False otherwise. This method is a wrapper for the _condition method, which is setted by the set_condition_function method.
         """
-        self.last_condition_state = self._condition(self,**kwargs)
+        self.last_condition_state = self._condition(self,*args,**kwargs)
         return self.last_condition_state
     
     def set_condition_function(self,condition_function:callable) -> None:
