@@ -24,3 +24,6 @@ class pydyn_surv_list(list):
     
     def names(self) -> list:
         return [i.name for i in self]
+    
+    def answer_history(self) -> list:
+        return [i.answer_history for i in self]

@@ -338,10 +338,10 @@ class survey:
         else:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
     
-    def launch_random(self,random_func:callable=rnd_choices,all_nanzero_to_one=False) -> None:
+    def launch_random(self,random_func:callable=rnd_choices,all_zero_to_one=False) -> None:
         # self.update_all()
         items_ = self.get_items()
-        item_ = random_func(items_,items_.probabilities(all_nanzero_to_one=all_nanzero_to_one))[0]
+        item_ = random_func(items_,items_.probabilities(all_zero_to_one=all_zero_to_one))[0]
 
         return item_,item_.question_text, item_.answers_text, item_.answers_values
 
