@@ -2,6 +2,7 @@ import numpy as np
 from .item import item as item
 from . import funcs
 from .other_classes import pydyn_surv_list
+from random import choices as rnd_choices
 
 LAUNCH_FORMAT = [
     '-----------------------------------------------------------\n {}',
@@ -66,6 +67,8 @@ class survey:
 
         self.set_origin(origin)
         self.set_offspring(offspring)
+
+        self.last_condition_state = None
 
     def set_origin(self,origin:list) -> None:
         """Sets the origin for the survey.
@@ -329,7 +332,13 @@ class survey:
         else:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
     
-    def launch_item(self,item_:item,force_answer:bool = False) -> None:
+    def launch_random(self,random_func:callable=rnd_choices,all_nanzero_to_one=False) -> None:
+        items_ = self.get_items()
+        item_ = random_func(items_,items_.probabilities(all_nanzero_to_one=all_nanzero_to_one))[0]
+
+        return item_,item_.question_text, item_.answers_text, item_.answers_values
+
+    def launch_on_terminal(self,item_:item,force_answer:bool = False) -> None:
         if item_ not in self.items:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
 
@@ -345,15 +354,15 @@ class survey:
         r = int(r)
         ans_val = item_.answers_values[r-1]
         item_.answer(ans_val,force_answer)
-        item_.set_last_launch(self.launch_count)
+        # item_.set_last_launch(self.launch_count)
 
-        self.launch_count += 1
-        self.category_launch_count += item_.category_vector_abs
+        # self.launch_count += 1
+        # self.category_launch_count += item_.category_vector_abs
         
-        for i in range(self.dimension):
-            if item_.category_vector[i]:
-                sign = item_.category_vector[i]/item_.category_vector_abs[i]
-                self.category_answer_history[i].append(ans_val*sign)
+        # for i in range(self.dimension):
+        #     if item_.category_vector[i]:
+        #         sign = item_.category_vector[i]/item_.category_vector_abs[i]
+        #         self.category_answer_history[i].append(ans_val*sign)
             
 
         # except:
@@ -390,7 +399,7 @@ class survey:
         """
         return self.category_answer_history
 
-    def print_info(self) -> None:
+    def print_info(self,print_items:bool = False) -> None:
         # self.name = name
         # self.training_dataset = init_training_dataset
         # self.item_amount = len(items)
@@ -398,16 +407,23 @@ class survey:
         # self.w = w
         # self.predictor = predictor
         # self.launch_format = launch_format
+        print('\nSURVEY INFO:\n------------')
         print('Survey name: {}'.format(self.name))
         print('Training dataset:')
         print(*('   {} -> {}\n'.format(x,y) for x,y in self.training_dataset),sep='')
         print('Item amount: {}'.format(self.item_amount))
         print('Predicted item labels: {}'.format(self.predicted_item_labels))
+        print('Probabilities: {}'.format(self.get_items().probabilities()))
         print('Calculated item labels: {}'.format(self.calculated_item_labels))
         print('Weight: {}'.format(self.w))
         print('Predictor: {}'.format(self.predictor))
-        print('ITEMS:\n------')
-        self.print_items()
+        print('Origin: {}'.format([o.name for o in self.origin]))
+        print('Origin category: {}'.format(self.origin_category))
+        print('Offspring: {}'.format([o.name for o in self.offspring]))
+        print('Weight history: {}'.format(self.w_history))
+        if print_items:
+            print('\nITEMS:\n------')
+            self.print_items()
 
     def update_all(self,exclude_calculated_labels:bool = False) -> None:
         self.update_training_dataset()
@@ -449,7 +465,8 @@ class survey:
     def condition(self,*args,**kwargs) -> bool:
         """Returns True if the condition for launching the survey is met, False otherwise. This method is a wrapper for the _condition method, which is setted by the set_condition_function method.
         """
-        return self._condition(self,**kwargs)
+        self.last_condition_state = self._condition(self,**kwargs)
+        return self.last_condition_state
     
     def set_condition_function(self,condition_function:callable) -> None:
         self._condition = condition_function

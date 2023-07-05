@@ -222,11 +222,31 @@ class item:
             self.answer_history.append(answer)
             self.launch_count += 1
             
+            survey = self.origin_survey
+            if survey is not None:
+                self.set_last_launch(survey.launch_count)
+                survey.launch_count += 1
+                survey.category_launch_count += self.category_vector_abs
+                for i in range(survey.dimension):
+                    if self.category_vector[i] != 0:
+                        sign = self.category_vector[i]/self.category_vector_abs[i]
+                        survey.category_answer_history[i].append(answer*sign)
+            
         else:
             if force:
                 Warning('The answer is out of range, but it was recorded anyway.')
                 self.answer_history.append(answer)
                 self.launch_count += 1
+            
+                survey = self.origin_survey
+                if survey is not None:
+                    survey.launch_count += 1
+                    survey.category_launch_count += self.category_vector_abs
+                    for i in range(survey.dimension):
+                        if self.category_vector[i] != 0:
+                            sign = self.category_vector[i]/self.category_vector_abs[i]
+                            survey.category_answer_history[i].append(answer*sign)
+            
             else:
                 Exception('The answer was not recorded because it is out of range. You can force the answer to be recorded by setting the force parameter to True.')
 

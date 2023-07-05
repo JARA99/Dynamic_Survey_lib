@@ -11,3 +11,4 @@ This submodule contains the clases for building a survey, those are:
 from . import item
 from . import survey
 from . import funcs
+from .other_classes import pydyn_surv_list

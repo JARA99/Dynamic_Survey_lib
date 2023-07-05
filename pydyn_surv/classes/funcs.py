@@ -21,13 +21,19 @@ def TRAIN_FUNCTION(self,gradient_des:callable = blc.gradient_descent,eta:float =
 
 def FUNC_LIKERT_ITEM_PROBABILITY(self,axis_move = 2):
     if not self.get_predicted_label() is np.nan:
-        prob = self.get_predicted_label() + axis_move + self.expertvalue
+        if not np.isnan(self.expertvalue):
+            prob = (self.get_predicted_label() + axis_move) * (1 + self.expertvalue)
+        else:
+            prob = self.get_predicted_label() + axis_move
         if prob < 0:
             prob = 0
 
         return prob
     else:
-        prob = axis_move+self.expertvalue
+        if not np.isnan(self.expertvalue):
+            prob = axis_move*(1+self.expertvalue)
+        else:
+            prob = axis_move
         if prob < 0:
             prob = 0
         
@@ -74,12 +80,15 @@ def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated
         item_count_percent = 0
         cat_count_percent = 0
 
-    prob_elements = [axis_move,self.expertvalue,item_std*std_weight,cat_std*cat_std_weight,item_count_percent*launch_count_weight,cat_count_percent*cat_launch_count_weight]
+    prob_elements = [axis_move,item_std*std_weight,cat_std*cat_std_weight,item_count_percent*launch_count_weight,cat_count_percent*cat_launch_count_weight]
 
     if np.isnan(prob_elements).all():
         prob = 0
     else:
-        prob = np.nansum(prob_elements)
+        if not np.isnan(self.expertvalue):
+            prob = (1 + self.expertvalue)*np.nansum(prob_elements)
+        else:
+            prob = np.nansum(prob_elements)
 
     if prob < 0:
         prob = 0
