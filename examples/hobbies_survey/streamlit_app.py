@@ -8,9 +8,12 @@ from pydyn_surv.classes import survey
 import random as rnd
 
 Q_AMT = 25
-no_tendence = 0
-q_count = 0
-answer_state = 1
+if 'no_tendence' not in st.session_state:
+    st.session_state['no_tendence'] = 0
+if 'q_count' not in st.session_state:
+    st.session_state['q_count'] = 0
+if 'answer_state' not in st.session_state:
+    st.session_state['answer_state'] = 1
 
 
 def get_q():
@@ -21,9 +24,8 @@ def get_q():
     if len(srvs) == 0:
         Warning('No surveys available for this user.')
         sel = HS.hobbies_survey
-        global no_tendence
-        no_tendence += 1
-        if no_tendence > 5:
+        st.session_state.no_tendence += 1
+        if st.session_state.no_tendence > 5:
             pass #TODO: end survey
     else:
         print(srvs[0].get_items().answer_history())
@@ -49,31 +51,44 @@ title_view.title('Encuesta de hobbies')
 
 
 def create_a_question():
-    global answer_state
-    global q_count
-    answer_state = 0
+    st.session_state.answer_state = 0
     current_q,current_q_text = get_q()
-    form = st.form(key='form_{}'.format(q_count))
+    form = st.form(key='form_{}'.format(st.session_state.q_count))
 
     value = likert_question(form,current_q_text)
     form_filled = form.form_submit_button('Siguiente')
-    if form_filled:
-        print(value)
-        print(current_q.question_text)
-        answer_q(current_q,value)
-        q_count += 1
-        # answer_state = 0
+    # while not form_filled:
+    #     print('waiting for form to be filled')
+    # answer_q(current_q,value)
+    # if form_filled:
+    #     print(value)
+    #     print(current_q.question_text)
+    #     current_q.answer(value)
+    #     st.session_state.q_count += 1
+    #     st.session_state.answer_state = 1
+        # st.session_state.answer_state = 0
+
 
 
 def answer_q(q,value):
+    # q.answer(value)
+    # st.session_state.answer_state = 1
+    print(value)
+    print(q.question_text)
     q.answer(value)
-    global answer_state
-    # answer_state = 1
+    st.session_state.q_count += 1
+    st.session_state.answer_state = 1
 
-if answer_state == 1:
-    q_count = create_a_question()
+if st.session_state.answer_state == 1:
+    create_a_question()
 # else:
 #     next_button_view.button('nueva',on_click=create_a_question(question_view,next_button_view))
+
+# questions_views = []
+
+# for q in Q_AMT:
+#     temp = st.empty()
+#     questions_views.append(temp)
 
 
 
