@@ -1,5 +1,6 @@
 import numpy as np
 from ..LinearClassifier import basic_linear_classifier as blc
+import math
 # from .item import item
 # from .survey import survey
 
@@ -58,7 +59,7 @@ def FUNC_APPLY_TO_ITEM_AND_CATEGORY_HISTORY(self,func:callable,*args,**kargs):
     return item_func, cat_func
 
 
-def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated_since = 5,std_weight = SELF_STD_W,cat_std_weight = CAT_STD_W,launch_count_weight = SELF_COUNT_W,cat_launch_count_weight = CAT_COUNT_W):
+def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated_since = 5,std_weight = SELF_STD_W,cat_std_weight = CAT_STD_W,launch_count_weight = SELF_COUNT_W,cat_launch_count_weight = CAT_COUNT_W,predicted_label_weight = None):
 
     last_launch = self.get_last_launch()
     origin_srv = self.get_origin_survey()
@@ -79,8 +80,13 @@ def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated
     else:
         item_count_percent = 0
         cat_count_percent = 0
+    
+    if predicted_label_weight is None:
+        predicted_label_weight = origin_srv.get_launch_count()/origin_srv.item_amount
+        if predicted_label_weight > 1:
+            predicted_label_weight = 1 + math.log(predicted_label_weight)
 
-    prob_elements = [axis_move,item_std*std_weight,cat_std*cat_std_weight,item_count_percent*launch_count_weight,cat_count_percent*cat_launch_count_weight]
+    prob_elements = [axis_move,self.get_predicted_label()*predicted_label_weight,item_std*std_weight,cat_std*cat_std_weight,item_count_percent*launch_count_weight,cat_count_percent*cat_launch_count_weight]
 
     if np.isnan(prob_elements).all():
         prob = 0

@@ -339,12 +339,14 @@ class survey:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
     
     def launch_random(self,random_func:callable=rnd_choices,all_nanzero_to_one=False) -> None:
+        # self.update_all()
         items_ = self.get_items()
         item_ = random_func(items_,items_.probabilities(all_nanzero_to_one=all_nanzero_to_one))[0]
 
         return item_,item_.question_text, item_.answers_text, item_.answers_values
 
     def launch_on_terminal(self,item_:item,force_answer:bool = False) -> None:
+        # self.update_all()
         if item_ not in self.items:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
 
@@ -507,6 +509,7 @@ class survey:
     def train(self,*args,**kwargs) -> np.ndarray:
         """Trains the survey. This method is a wrapper for the _train method, which is the one that actually trains the survey.
         """
+        self.update_all()
         trained_w = self._train(self,*args,**kwargs)
         self.set_w(trained_w)
     
@@ -543,3 +546,5 @@ class survey:
         return self.items
 
 
+    def get_weight_history(self) -> list:
+        return self.w_history
