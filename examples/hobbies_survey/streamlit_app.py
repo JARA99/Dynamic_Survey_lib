@@ -13,12 +13,12 @@ import dill
 Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
-if 'definitions' not in st.session_state:
-    st.session_state['defs'] = dill.loads(dill.dumps(definitions, -1))
-    DEFS = st.session_state.defs
-if 'hobbies_survey' not in st.session_state:
-    st.session_state['hobbies_survey'] = dill.loads(dill.dumps(hobbies_survey, -1))
-    HS = st.session_state.hobbies_survey
+if 'defs_module' not in st.session_state:
+    st.session_state['defs_module'] = dill.loads(dill.dumps(definitions, -1))
+DEFS = st.session_state.defs_module
+if 'hobbies_survey_module' not in st.session_state:
+    st.session_state['hobbies_survey_module'] = dill.loads(dill.dumps(hobbies_survey, -1))
+HS = st.session_state.hobbies_survey_module
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
 if 'q_count' not in st.session_state:
