@@ -11,7 +11,7 @@ ITEM_PROB_DEFS = {
     "std_weight":0,
     "cat_std_weight":0.5,
     "launch_count_weight":-1,
-    "cat_launch_count_weight":-8
+    # "cat_launch_count_weight":-10
 }
 HELP_TEXT = '\
 This is a little help for navigating the script:\n\
@@ -23,29 +23,29 @@ This is a little help for navigating the script:\n\
 HELP_TEXT_SUMARY = '[h,q,si,ii n,b]: '
 
 
-def l0_item_prob(self,not_repeated_since = 15,item_prob_defs = ITEM_PROB_DEFS) -> float:
-    return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,**item_prob_defs)
-def l1_item_prob(self,not_repeated_since = 10,item_prob_defs = ITEM_PROB_DEFS) -> float:
-    return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,**item_prob_defs)
-def l2_item_prob(self,not_repeated_since = 4,item_prob_defs = ITEM_PROB_DEFS) -> float:
-    return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,**item_prob_defs)
+def l0_item_prob(self,not_repeated_since = 15,cat_launch_count_weight = -8,item_prob_defs = ITEM_PROB_DEFS) -> float:
+    return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,cat_launch_count_weight=cat_launch_count_weight,**item_prob_defs)
+def l1_item_prob(self,not_repeated_since = 10,cat_launch_count_weight = -10,item_prob_defs = ITEM_PROB_DEFS) -> float:
+    return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,cat_launch_count_weight=cat_launch_count_weight,**item_prob_defs)
+def l2_item_prob(self,not_repeated_since = 4,cat_launch_count_weight = -6,item_prob_defs = ITEM_PROB_DEFS) -> float:
+    return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,cat_launch_count_weight=cat_launch_count_weight,**item_prob_defs)
 
 
-def l0_prob(self:survey.survey) -> float:
+def l0_prob(self:survey.survey,extra = 0.6) -> float:
     p = 1 - (self.launch_count/self.item_amount)
     if p <= 0:
         p = 1/20
-    return p
-def l1_prob(self:survey.survey,extra = 4) -> float:
-    p = extra - extra*(self.launch_count/self.item_amount)
+    return p*extra
+def l1_prob(self:survey.survey,extra = 1) -> float:
+    p = 1 - (self.launch_count/self.item_amount)
     if p <= 0:
         p = 1/15
-    return p/4
-def l2_prob(self:survey.survey,extra = 16) -> float:
-    p = extra - extra*(self.launch_count/self.item_amount)
+    return p*extra
+def l2_prob(self:survey.survey,extra = 4) -> float:
+    p = 1 - (self.launch_count/self.item_amount)
     if p <= 0:
         p = 1/9
-    return p/20
+    return p*extra
 
 def l0_condition(self) -> bool:
     return True
