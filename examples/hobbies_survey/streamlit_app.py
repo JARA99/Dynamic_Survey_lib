@@ -7,14 +7,15 @@ import hobbies_survey as HS
 import definitions
 
 import random as rnd
-import pickle
+import dill
 
 
 Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
 if 'definitions' not in st.session_state:
-    st.session_state['defs'] = pickle.loads(pickle.dumps(definitions, -1))
+    # st.session_state['defs'] = pickle.loads(pickle.dumps(definitions, -1))
+    st.session_state['defs'] = dill.loads(dill.dumps(definitions, -1))
     DEFS = st.session_state.defs
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
