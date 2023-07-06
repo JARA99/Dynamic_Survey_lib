@@ -4,15 +4,17 @@ import plotly.express as px
 import pandas as pd
 
 import hobbies_survey as HS
-import definitions as DEFS
+import definitions
 
-from pydyn_surv.classes import survey
 import random as rnd
 
 
 Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
+if 'definitions' not in st.session_state:
+    st.session_state['defs'] = definitions
+    DEFS = st.session_state.defs
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
 if 'q_count' not in st.session_state:
@@ -57,7 +59,7 @@ def answer_q(value):
     survey_ = item_.get_origin_survey()
     f.write('"{}","{}",{},"{}","{}","{}","{}"\n'.format(item_.id,item_.get_categories_names(),value,survey_.name,list(survey_.get_weight()),st.session_state.current_surveys.names(),st.session_state.current_surveys_probs))
     f.close()
-    st.session_state.q_count = survey.survey.get_total_launches()
+    st.session_state.q_count = HS.survey.survey.get_total_launches()
     # print(st.session_state.q_count)
     generate_q()
     # print(st.session_state.current_item.answer_history)
@@ -67,7 +69,7 @@ def get_q():
     srvs = HS.hobbies_survey.get_surveys()
     st.session_state.current_surveys = srvs
     st.session_state.current_surveys_probs = srvs.probabilities()
-    # print('     Total launches: {}'.format(survey.survey.get_total_launches()))
+    # print('     Total launches: {}'.format(HS.survey.survey.get_total_launches()))
     # print('     Surveys avilable: {}'.format(srvs.names()))
     # print('     Probability of each: {}'.format(srvs.probabilities()))
     if len(srvs) == 0:
@@ -79,7 +81,7 @@ def get_q():
             st.session_state.q_count = Q_AMT
     else:
         # print('l0 history: {}'.format(srvs[0].get_items().answer_history()))
-        sel:survey.survey = rnd.choices(srvs,srvs.probabilities())[0]
+        sel:HS.survey.survey = rnd.choices(srvs,srvs.probabilities())[0]
 
     item_,item_question_text, item_answers_text, item_answers_values = sel.launch_random(all_zero_to_one=True)
 
