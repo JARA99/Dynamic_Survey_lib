@@ -73,7 +73,7 @@ def answer_q(value):
     survey_ = item_.get_origin_survey()
     f.write('"{}","{}",{},"{}","{}","{}","{}"\n'.format(item_.id,item_.get_categories_names(),value,survey_.name,list(survey_.get_weight()),st.session_state.current_surveys.names(),st.session_state.current_surveys_probs))
     f.close()
-    st.session_state.q_count = survey.survey.get_total_launches()
+    st.session_state.q_count += 1 # survey.survey.get_total_launches()
     # print(st.session_state.q_count)
     generate_q()
     # print(st.session_state.current_item.answer_history)
@@ -83,9 +83,6 @@ def get_q():
     srvs = hobbies_survey.get_surveys()
     st.session_state.current_surveys = srvs
     st.session_state.current_surveys_probs = srvs.probabilities()
-    # print('     Total launches: {}'.format(survey.survey.get_total_launches()))
-    # print('     Surveys avilable: {}'.format(srvs.names()))
-    # print('     Probability of each: {}'.format(srvs.probabilities()))
     if len(srvs) == 0:
         Warning('No surveys available for this user.')
         sel = hobbies_survey
