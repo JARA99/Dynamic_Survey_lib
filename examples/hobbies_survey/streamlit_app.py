@@ -14,7 +14,7 @@ Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
 if 'definitions' not in st.session_state:
-    st.session_state['defs'] = cp.deepcopy(definitions)
+    st.session_state['defs'] = cp.copy(definitions)
     DEFS = st.session_state.defs
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
