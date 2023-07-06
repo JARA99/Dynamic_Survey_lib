@@ -72,7 +72,7 @@ def make_closing():
     question_view.empty()
     next_button_view.empty()
     with results_view.container():
-        with open('survey_register.csv','r') as f:
+        with open('./survey_register.csv','r') as f:
             st.download_button('Descargar resultados',data=f,file_name='resultados.csv',mime='text/csv')
 
 

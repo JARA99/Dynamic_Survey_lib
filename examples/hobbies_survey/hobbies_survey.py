@@ -66,7 +66,7 @@ def l2_condition(self:survey.survey) -> bool:
 
 
 
-def get_surveys_from_excel(excel_file:str = 'data/hobbies_surv.xlsx',level:int = 0,surveys_names = DEFS.l0, categories_names = DEFS.l1, origin = None, surv_prob:callable = l0_prob, surv_condition:callable = l0_condition, item_prob:callable = l0_item_prob) -> List[survey.survey]:
+def get_surveys_from_excel(excel_file:str = './data/hobbies_surv.xlsx',level:int = 0,surveys_names = DEFS.l0, categories_names = DEFS.l1, origin = None, surv_prob:callable = l0_prob, surv_condition:callable = l0_condition, item_prob:callable = l0_item_prob) -> List[survey.survey]:
 
     def str_to_list(string):
         lst = string[1:-1].split(',')
