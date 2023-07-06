@@ -10,7 +10,7 @@ from pydyn_surv.classes import survey
 import random as rnd
 
 
-Q_AMT = 25
+Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
 if 'no_tendence' not in st.session_state:
@@ -66,7 +66,7 @@ def get_q():
         st.session_state.no_tendence += 1
         if st.session_state.no_tendence >= NO_TENDENCE_LIMIT:
             # make_closing()
-            st.session_state.q_count = Q_AMT + 1
+            st.session_state.q_count = Q_AMT
     else:
         # print('l0 history: {}'.format(srvs[0].get_items().answer_history()))
         sel:survey.survey = rnd.choices(srvs,srvs.probabilities())[0]
@@ -83,9 +83,13 @@ def make_closing():
     q_devider_t.empty()
 
     with results_view.container():
-        fig = make_graph()
-        if fig is not None:
-            st.plotly_chart(fig)
+        l0_fig, l1_fig, l2_fig = make_graph()
+        if l0_fig is not None:
+            st.plotly_chart(l0_fig)
+            if l1_fig is not None:
+                st.plotly_chart(l1_fig)
+                if l2_fig is not None:
+                    st.plotly_chart(l2_fig)
         else:
             emojicols = st.columns([1,1,1])
             emojicols[1].write('# :astonished::confounded::sweat:')
@@ -107,30 +111,64 @@ def make_closing():
                 st.download_button('Descargar resultados',data=f,file_name='resultados.csv',mime='text/csv')
 
 def make_graph():
+    all_l0 = np.array(HS.s0).flatten()
+    all_l1 = np.array(HS.s1).flatten()
     all_l2 = np.array(HS.s2).flatten()
 
-    hobbies_table = []
 
+    # l0
+    # --------------------------------------------------------------------------------------------------------------------
+    l0_hobbies_table = []
+    for srv in all_l0:
+        w = srv.get_weight()
+        for i in range(len(w)):
+            if w[i] > 0:
+                l0_hobbies_table.append(['Preferencias generales: {}'.format(srv.categories[i]),round((w[i]/2)*100)])
+    
+    if len(l0_hobbies_table) == 0:
+        l0_fig = None
+    else:
+        l0_hobbies_table = pd.DataFrame(l0_hobbies_table,columns=['Hobbie','Preferencia'])
+        l0_fig = px.pie(l0_hobbies_table, values='Preferencia', names='Hobbie', title='Preferencias generales')
+
+    # l1
+    # --------------------------------------------------------------------------------------------------------------------
+    l1_hobbies_table = []
+    for srv in all_l1:
+        w = srv.get_weight()
+        for i in range(len(w)):
+            if w[i] > 0:
+                l1_hobbies_table.append(['{}: {}'.format(srv.name,srv.categories[i]),round((w[i]/2)*100)])
+    
+    if len(l1_hobbies_table) == 0:
+        l1_fig = None
+    else:
+        l1_hobbies_table = pd.DataFrame(l1_hobbies_table,columns=['Hobbie','Preferencia'])
+        l1_fig = px.pie(l1_hobbies_table, values='Preferencia', names='Hobbie', title='Preferencia por grupos')
+
+    # l2
+    # --------------------------------------------------------------------------------------------------------------------
+    l2_hobbies_table = []
     for srv in all_l2:
         w = srv.get_weight()
         for i in range(len(w)):
             if w[i] > 0:
-                hobbies_table.append(['{}: {}'.format(srv.name,srv.categories[i]),round((w[i]/2)*100)])
+                l2_hobbies_table.append(['{}: {}'.format(srv.name,srv.categories[i]),round((w[i]/2)*100)])
     
-    if len(hobbies_table) == 0:
-        return None
+    if len(l2_hobbies_table) == 0:
+        l2_fig = None
+    else:
+        l2_hobbies_table = pd.DataFrame(l2_hobbies_table,columns=['Hobbie','Preferencia'])
+        l2_fig = px.pie(l2_hobbies_table, values='Preferencia', names='Hobbie', title='Preferencia específicas')
 
-    hobbies_table = pd.DataFrame(hobbies_table,columns=['Hobbie','Preferencia'])
-    fig = px.pie(hobbies_table, values='Preferencia', names='Hobbie', title='Preferencia por hobbies')
-
-    return fig
+    return l0_fig, l1_fig, l2_fig
 
 
 title_view.title('Encuesta de hobbies')
 enumeration_view.caption('<center> {}/{} </center>'.format(st.session_state.q_count,Q_AMT),True)
 
 
-if st.session_state.q_count <= Q_AMT:
+if st.session_state.q_count < Q_AMT:
 
     if st.session_state.current_item is None:
         generate_q()
@@ -140,7 +178,7 @@ if st.session_state.q_count <= Q_AMT:
     trigger = next_button_view.button('Siguiente')
     if trigger:
         answer_q(value)
-        if st.session_state.q_count <= Q_AMT:
+        if st.session_state.q_count < Q_AMT:
             value = likert_question(question_view,st.session_state.current_item_question_text)
             enumeration_view.caption('<center> {}/{} </center>'.format(st.session_state.q_count,Q_AMT),True)
         else:

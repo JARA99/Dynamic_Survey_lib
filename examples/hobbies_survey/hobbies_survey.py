@@ -31,20 +31,20 @@ def l2_item_prob(self,not_repeated_since = 4,cat_launch_count_weight = -6,item_p
     return funcs.FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,not_repeated_since=not_repeated_since,cat_launch_count_weight=cat_launch_count_weight,**item_prob_defs)
 
 
-def l0_prob(self:survey.survey,extra = 0.6) -> float:
-    p = 1 - (self.launch_count/self.item_amount)
+def l0_prob(self:survey.survey,extra = 4) -> float:
+    p = 1 - (self.launch_count/self.dimension)
     if p <= 0:
-        p = 1/20
+        p = 1/len(self.categories)
     return p*extra
 def l1_prob(self:survey.survey,extra = 1) -> float:
-    p = 1 - (self.launch_count/self.item_amount)
+    p = 1 - (self.launch_count/self.dimension)
     if p <= 0:
-        p = 1/15
+        p = 1/len(self.categories)
     return p*extra
-def l2_prob(self:survey.survey,extra = 4) -> float:
-    p = 1 - (self.launch_count/self.item_amount)
+def l2_prob(self:survey.survey,extra = 1.5) -> float:
+    p = 1 - (self.launch_count/self.dimension)
     if p <= 0:
-        p = 1/9
+        p = 1/len(self.categories)
     return p*extra
 
 def l0_condition(self) -> bool:
