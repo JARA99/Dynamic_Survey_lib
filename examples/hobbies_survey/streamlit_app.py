@@ -49,6 +49,8 @@ if 'current_surveys' not in st.session_state:
     st.session_state['current_surveys'] = []
 if 'current_surveys_probs' not in st.session_state:
     st.session_state['current_surveys_probs'] = []
+if 'save_file' not in st.session_state:
+    st.session_state['save_file'] = ''
     
 title_view = st.empty()
 q_devider_t = st.divider()
@@ -68,11 +70,11 @@ def generate_q():
 def answer_q(value):
     # print('Answering question...')
     st.session_state.current_item.answer(value)
-    f = open(DEFS.SURVEY_REGISTER,'a')
+    # f = open(DEFS.SURVEY_REGISTER,'a')
     item_ = st.session_state.current_item
     survey_ = item_.get_origin_survey()
-    f.write('"{}","{}",{},"{}","{}","{}","{}"\n'.format(item_.id,item_.get_categories_names(),value,survey_.name,list(survey_.get_weight()),st.session_state.current_surveys.names(),st.session_state.current_surveys_probs))
-    f.close()
+    st.session_state.save_file += ('"{}","{}",{},"{}","{}","{}","{}"\n'.format(item_.id,item_.get_categories_names(),value,survey_.name,list(survey_.get_weight()),st.session_state.current_surveys.names(),st.session_state.current_surveys_probs))
+    # f.close()
     st.session_state.q_count += 1 # survey.survey.get_total_launches()
     # print(st.session_state.q_count)
     generate_q()
@@ -127,11 +129,9 @@ def make_closing():
         
         save_eval_button = st.button('Guardar evaluación')
         if save_eval_button:
-            with open(DEFS.SURVEY_REGISTER,'a') as f:
-                f.write('# EVALUATION: {}\n'.format(eval_value))
+            st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
 
-            with open(DEFS.SURVEY_REGISTER,'r') as f:
-                st.download_button('Descargar resultados',data=f,file_name='resultados.csv',mime='text/csv')
+            st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
 
 def make_graph():
     all_l0 = np.array(s0).flatten()
