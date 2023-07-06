@@ -231,7 +231,8 @@ class item:
                     if self.category_vector[i] != 0:
                         sign = self.category_vector[i]/self.category_vector_abs[i]
                         survey.category_answer_history[i].append(answer*sign)
-            
+                survey.train()
+
         else:
             if force:
                 Warning('The answer is out of range, but it was recorded anyway.')
@@ -246,7 +247,8 @@ class item:
                         if self.category_vector[i] != 0:
                             sign = self.category_vector[i]/self.category_vector_abs[i]
                             survey.category_answer_history[i].append(answer*sign)
-            
+                    survey.train()
+
             else:
                 Exception('The answer was not recorded because it is out of range. You can force the answer to be recorded by setting the force parameter to True.')
 
@@ -343,3 +345,18 @@ class item:
         print('ID: ',self.id)
         print('')
     
+    def get_categories_names(self) -> str:
+        """Gets the category name for the item.
+
+        Returns
+        -------
+        str
+            The category name for the item.
+        """
+        categories = self.origin_survey.categories
+        categories_names = []
+        
+        for i in range(len(categories)):
+            if self.category_vector[i] != 0:
+                categories_names.append(categories[i])
+        return categories_names

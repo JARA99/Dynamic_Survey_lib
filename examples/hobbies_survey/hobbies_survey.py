@@ -36,13 +36,13 @@ def l0_prob(self:survey.survey) -> float:
     if p <= 0:
         p = 1/20
     return p
-def l1_prob(self:survey.survey) -> float:
-    p = 2 - 2*(self.launch_count/self.item_amount)
+def l1_prob(self:survey.survey,extra = 4) -> float:
+    p = extra - extra*(self.launch_count/self.item_amount)
     if p <= 0:
         p = 1/15
     return p/4
-def l2_prob(self:survey.survey) -> float:
-    p = 4 - 4*(self.launch_count/self.item_amount)
+def l2_prob(self:survey.survey,extra = 16) -> float:
+    p = extra - extra*(self.launch_count/self.item_amount)
     if p <= 0:
         p = 1/9
     return p/20
