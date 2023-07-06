@@ -3,8 +3,8 @@ from streamlit_utilities import *
 import plotly.express as px
 import pandas as pd
 
-import hobbies_survey
-import definitions
+# import hobbies_survey
+# import definitions
 
 import random as rnd
 import dill
@@ -14,9 +14,11 @@ Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
 if 'defs_module' not in st.session_state:
+    import definitions
     st.session_state['defs_module'] = dill.loads(dill.dumps(definitions, -1))
 DEFS = st.session_state.defs_module
 if 'hobbies_survey_module' not in st.session_state:
+    import hobbies_survey
     st.session_state['hobbies_survey_module'] = dill.loads(dill.dumps(hobbies_survey, -1))
 HS = st.session_state.hobbies_survey_module
 if 'no_tendence' not in st.session_state:
