@@ -8,6 +8,7 @@ from pydyn_surv.classes import survey
 import random as rnd
 
 Q_AMT = 25
+
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
 if 'q_count' not in st.session_state:
@@ -19,6 +20,16 @@ if 'current_item_question_text' not in st.session_state:
     st.session_state['current_item_question_text'] = None
 if 'current_surveys' not in st.session_state:
     st.session_state['current_surveys'] = []
+    
+title_view = st.empty()
+st.divider()
+question_view = st.empty()
+next_button_view = st.empty()
+st.divider()
+blind_evaluation_view = st.empty()
+results_view = st.empty()
+model_evaluation_view = st.empty()
+
 
 def generate_q():
     print('Generating new question...')
@@ -57,24 +68,16 @@ def get_q():
 
     return item_, item_question_text
 
-
-title_view = st.empty()
-st.divider()
-question_view = st.empty()
-next_button_view = st.empty()
-st.divider()
-blind_evaluation_view = st.empty()
-results_view = st.empty()
-model_evaluation_view = st.empty()
-
-title_view.title('Encuesta de hobbies')
-
 def make_closing():
     question_view.empty()
     next_button_view.empty()
     with results_view.container():
         with open('survey_register.csv','r') as f:
             st.download_button('Descargar resultados',data=f,file_name='resultados.csv',mime='text/csv')
+
+
+
+title_view.title('Encuesta de hobbies')
 
 if st.session_state.q_count <= Q_AMT:
 
