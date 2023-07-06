@@ -7,6 +7,7 @@ import definitions as DEFS
 from pydyn_surv.classes import survey
 import random as rnd
 
+
 Q_AMT = 25
 
 if 'no_tendence' not in st.session_state:
@@ -32,11 +33,11 @@ model_evaluation_view = st.empty()
 
 
 def generate_q():
-    print('Generating new question...')
+    # print('Generating new question...')
     st.session_state.current_item, st.session_state.current_item_question_text = get_q()
 
 def answer_q(value):
-    print('Answering question...')
+    # print('Answering question...')
     st.session_state.current_item.answer(value)
     f = open(DEFS.SURVEY_REGISTER,'a')
     item_ = st.session_state.current_item
@@ -72,7 +73,7 @@ def make_closing():
     question_view.empty()
     next_button_view.empty()
     with results_view.container():
-        with open('./survey_register.csv','r') as f:
+        with open(DEFS.SURVEY_REGISTER,'r') as f:
             st.download_button('Descargar resultados',data=f,file_name='resultados.csv',mime='text/csv')
 
 
