@@ -3,24 +3,40 @@ from streamlit_utilities import *
 import plotly.express as px
 import pandas as pd
 
-# import hobbies_survey
-# import definitions
+# import hobbies_survey as HS
+from hobbies_survey import get_surveys_from_excel, l1_prob, l1_condition, l1_item_prob, l2_prob, l2_condition, l2_item_prob
+import definitions as DEFS
 
+from pydyn_surv.classes import survey
 import random as rnd
-import dill
+
+st.set_page_config(initial_sidebar_state="collapsed") 
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+if 's0' not in st.session_state:
+    st.session_state.s0 = get_surveys_from_excel()
+s0 = st.session_state.s0
+
+if 's1' not in st.session_state:
+    st.session_state.s1 = get_surveys_from_excel(level=1,surveys_names=DEFS.l1,categories_names=DEFS.l2,origin=s0,surv_prob=l1_prob,surv_condition=l1_condition,item_prob=l1_item_prob)
+s1 = st.session_state.s1
+
+if 's2' not in st.session_state:
+    st.session_state.s2 = get_surveys_from_excel(level=2,surveys_names=DEFS.l2,categories_names=DEFS.l3,origin=s1,surv_prob=l2_prob,surv_condition=l2_condition,item_prob=l2_item_prob)
+s2 = st.session_state.s2
+
+hobbies_survey = s0[0]
+
+# ----------------------------------------------------------------------------------------------------------
+
 
 
 Q_AMT = 30
 NO_TENDENCE_LIMIT = 3
 
-if 'defs_module' not in st.session_state:
-    import definitions
-    st.session_state['defs_module'] = dill.loads(dill.dumps(definitions, -1))
-DEFS = st.session_state.defs_module
-if 'hobbies_survey_module' not in st.session_state:
-    import hobbies_survey
-    st.session_state['hobbies_survey_module'] = dill.loads(dill.dumps(hobbies_survey, -1))
-HS = st.session_state.hobbies_survey_module
+
+
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
 if 'q_count' not in st.session_state:
@@ -34,14 +50,6 @@ if 'current_surveys' not in st.session_state:
 if 'current_surveys_probs' not in st.session_state:
     st.session_state['current_surveys_probs'] = []
     
-st.sidebar.write('No tendance: {}'.format(st.session_state.no_tendence))
-st.sidebar.write('Q count: {}'.format(st.session_state.q_count))
-st.sidebar.write('Current item: {}'.format(st.session_state.current_item))
-st.sidebar.write('Current item question text: {}'.format(st.session_state.current_item_question_text))
-st.sidebar.write('Current surveys: {}'.format(st.session_state.current_surveys))
-st.sidebar.write('Current surveys probabilities: {}'.format(st.session_state.current_surveys_probs))
-st.sidebar.write('History: {}'.format(HS.s0[0].get_items().answer_history()))
-
 title_view = st.empty()
 q_devider_t = st.divider()
 question_view = st.empty()
@@ -65,29 +73,29 @@ def answer_q(value):
     survey_ = item_.get_origin_survey()
     f.write('"{}","{}",{},"{}","{}","{}","{}"\n'.format(item_.id,item_.get_categories_names(),value,survey_.name,list(survey_.get_weight()),st.session_state.current_surveys.names(),st.session_state.current_surveys_probs))
     f.close()
-    st.session_state.q_count = HS.survey.survey.get_total_launches()
+    st.session_state.q_count = survey.survey.get_total_launches()
     # print(st.session_state.q_count)
     generate_q()
     # print(st.session_state.current_item.answer_history)
     # st.session_state.current_item, st.session_state.current_item_question_text = get_q()
 
 def get_q():
-    srvs = HS.hobbies_survey.get_surveys()
+    srvs = hobbies_survey.get_surveys()
     st.session_state.current_surveys = srvs
     st.session_state.current_surveys_probs = srvs.probabilities()
-    # print('     Total launches: {}'.format(HS.survey.survey.get_total_launches()))
+    # print('     Total launches: {}'.format(survey.survey.get_total_launches()))
     # print('     Surveys avilable: {}'.format(srvs.names()))
     # print('     Probability of each: {}'.format(srvs.probabilities()))
     if len(srvs) == 0:
         Warning('No surveys available for this user.')
-        sel = HS.hobbies_survey
+        sel = hobbies_survey
         st.session_state.no_tendence += 1
         if st.session_state.no_tendence >= NO_TENDENCE_LIMIT:
             # make_closing()
             st.session_state.q_count = Q_AMT
     else:
         # print('l0 history: {}'.format(srvs[0].get_items().answer_history()))
-        sel:HS.survey.survey = rnd.choices(srvs,srvs.probabilities())[0]
+        sel:survey.survey = rnd.choices(srvs,srvs.probabilities())[0]
 
     item_,item_question_text, item_answers_text, item_answers_values = sel.launch_random(all_zero_to_one=True)
 
@@ -129,9 +137,9 @@ def make_closing():
                 st.download_button('Descargar resultados',data=f,file_name='resultados.csv',mime='text/csv')
 
 def make_graph():
-    all_l0 = np.array(HS.s0).flatten()
-    all_l1 = np.array(HS.s1).flatten()
-    all_l2 = np.array(HS.s2).flatten()
+    all_l0 = np.array(s0).flatten()
+    all_l1 = np.array(s1).flatten()
+    all_l2 = np.array(s2).flatten()
 
 
     # l0
@@ -209,3 +217,12 @@ if st.session_state.q_count < Q_AMT:
 
 else:
     make_closing()
+
+st.sidebar.write('#### Debug info:')
+st.sidebar.write('No tendance: {}'.format(st.session_state.no_tendence))
+st.sidebar.write('Q count: {}'.format(st.session_state.q_count))
+st.sidebar.write('Current item: {}'.format(st.session_state.current_item))
+st.sidebar.write('Current item question text: {}'.format(st.session_state.current_item_question_text))
+st.sidebar.write('Current surveys: {}'.format(st.session_state.current_surveys))
+st.sidebar.write('Current surveys probabilities: {}'.format(st.session_state.current_surveys_probs))
+st.sidebar.write('S0 history: {}'.format(s0[0].get_items().answer_history()))
