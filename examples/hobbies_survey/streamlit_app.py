@@ -23,7 +23,17 @@ if 'current_item_question_text' not in st.session_state:
     st.session_state['current_item_question_text'] = None
 if 'current_surveys' not in st.session_state:
     st.session_state['current_surveys'] = []
+if 'current_surveys_probs' not in st.session_state:
+    st.session_state['current_surveys_probs'] = []
     
+print('No tendance: {}'.format(st.session_state.no_tendence))
+print('Q count: {}'.format(st.session_state.q_count))
+print('Current item: {}'.format(st.session_state.current_item))
+print('Current item question text: {}'.format(st.session_state.current_item_question_text))
+print('Current surveys: {}'.format(st.session_state.current_surveys))
+print('Current surveys probabilities: {}'.format(st.session_state.current_surveys_probs))
+print('History: {}'.format(HS.s0[0].get_items().answer_history()))
+
 title_view = st.empty()
 q_devider_t = st.divider()
 question_view = st.empty()
