@@ -2,6 +2,7 @@ import pathlib
 pwd = pathlib.Path(__file__).parent.resolve()
 
 SURVEY_REGISTER = pwd.joinpath('survey_register.csv')
+EMAIL = 'jorgealejandro1999@gmail.com'
 
 hobbies_dict = {
     'Categorías': ['Actividades Físicas', 'Artes Creativas', 'Actividades Intelectuales', 'Coleccionismo'],

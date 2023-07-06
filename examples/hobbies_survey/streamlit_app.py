@@ -53,6 +53,8 @@ if 'save_file' not in st.session_state:
     st.session_state['save_file'] = ''
     
 title_view = st.empty()
+instructions_view = st.expander('Instrucciones')
+instructions_view.write('A continuación se le precentarán una serie de afirmaciones, por favor indique en qué medida estas están de acuerdo con su personalidad, gustos y preferencias. Si una afirmación no coincide con algo que usted diría punteela con mayor porcentaje de **:green["En desacuerdo"]**, en caso contrario punteela con mayor porcentaje de **:green["De acuerdo"]**.\n\nAl finalizar se le presentará un resumen de las conclusiones del modelo y una evaluación del mismo.')
 q_devider_t = st.divider()
 question_view = st.empty()
 next_button_view = st.empty()
@@ -125,12 +127,12 @@ def make_closing():
         
         eval_value = st.select_slider(
             'eval',label_visibility='hidden',
-            options=opts,format_func = get_eval_label,value = 0,key='eval_slider')
+            options=opts,format_func = get_eval_label,value = 50,key='eval_slider')
         
         save_eval_button = st.button('Guardar evaluación')
         if save_eval_button:
             st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
-
+            st.write('Evaluación guardada. Por favor descarga tus resultados y envíalos a: [{0}](mailto:{0}?subject=[EPS%Response])'.format(DEFS.EMAIL))
             st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
 
 def make_graph():
