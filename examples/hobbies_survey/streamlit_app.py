@@ -163,6 +163,7 @@ def make_closing():
             gh_write(st.session_state.save_file)
             st.session_state.save_file = '# NEW ENTRY\n'
             st.session_state.save_button_disabled = True
+            st.write('### :smile: ¡Gracias por tu evaluación! :smile:')
             # st.write('Evaluación guardada. Por favor descarga tus resultados y envíalos a: [{0}](mailto:{0}?subject=[EPS%Response])'.format(DEFS.EMAIL))
             # st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
 
