@@ -123,6 +123,8 @@ def get_q():
 
 def eval_done():
     st.session_state.save_button_disabled = False
+def clear_eval():
+    st.session_state.save_button_disabled = True
 
 def make_closing():
     question_view.empty()
@@ -155,15 +157,13 @@ def make_closing():
 
         closing_instructions = st.caption('Por favor presiona el botón **:green["Guardar y enviar"]** para que tus resultados y evaluación sean tomados en cuenta de forma **anónima**. Si lo deseas puedes volver a tomar el cuestionario ya que el objetivo del estudio no es recaudar datos de hobbies sino evaluar el modelo.')
 
-        save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled)
+        save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled,on_click=clear_eval)
         button_instrucc = st.caption('Realiza un cambio en la evaluación para habilitar el botón de guardado.')
         if save_eval_button:
             st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
             st.session_state.save_file += ('# COMMENT: {}\n'.format(comment_text))
             gh_write(st.session_state.save_file)
             st.session_state.save_file = '# NEW ENTRY\n'
-            st.session_state.save_button_disabled = True
-            make_closing()
             st.write('### :smile: ¡Gracias por tu evaluación! :smile:')
             # st.write('Evaluación guardada. Por favor descarga tus resultados y envíalos a: [{0}](mailto:{0}?subject=[EPS%Response])'.format(DEFS.EMAIL))
             # st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
