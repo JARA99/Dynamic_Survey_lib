@@ -150,7 +150,7 @@ def make_closing():
         opts = np.arange(0,105,5)
         
         eval_value = st.select_slider(
-            'Como calificarías la certeza el modelo:',
+            'Como calificarías la certeza del modelo:',
             options=opts,format_func = get_eval_label,value = 50,key='eval_slider',on_change=eval_done)
         
         comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text',on_change=eval_done)
