@@ -70,7 +70,7 @@ if 'save_button_disabled' not in st.session_state:
 # ----------------------------------------------------------------------------------------------------------------------
 title_view = st.empty()
 instructions_view = st.expander('Instrucciones')
-instructions_view.write('A continuación se le presentarán una serie de afirmaciones, por favor indique en qué medida estas representan su personalidad, gustos y preferencias. Si la afirmación lo representa, seleccione algún porcentaje en la escala de **:green["De acuerdo"]** (hacia la derecha), de lo contrario seleccione un porcentaje en la escala de **:green["En desacuerdo"]** (hacia la izquierda).\n\nAl finalizar se le presentará un resumen de las conclusiones del modelo y una evaluación del mismo.')
+instructions_view.write('A continuación se te presentarán una serie de afirmaciones, por favor indica en qué medida estas representan tu personalidad, gustos y preferencias. Si la afirmación te representa, seleccione algún porcentaje en la escala de **:green["De acuerdo"]** (hacia la derecha), de lo contrario selecciona un porcentaje en la escala de **:green["En desacuerdo"]** (hacia la izquierda).\n\nAl finalizar se te presentará un resumen de las conclusiones del modelo y un espacio para que evalúes el mismo, por favor recuerda **:green[guardar y enviar]** el cuestionario para que tus respuestas sean tomadas en cuenta.')
 q_devider_t = st.divider()
 question_view = st.empty()
 next_button_view = st.empty()
