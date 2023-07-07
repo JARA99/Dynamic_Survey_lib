@@ -151,11 +151,12 @@ def make_closing():
             'eval',label_visibility='hidden',
             options=opts,format_func = get_eval_label,value = 50,key='eval_slider',on_change=eval_done)
         
-        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text')
+        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text',on_change=eval_done)
 
         closing_instructions = st.caption('Por favor presiona el botón **:green["Guardar y enviar"]** para que tus resultados y evaluación sean tomados en cuenta de forma **anónima**. Si lo deseas puedes volver a tomar el cuestionario ya que el objetivo del estudio no es recaudar datos de hobbies sino evaluar el modelo.')
 
-        save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled,help='Mueve el slider de evaluación para activar el guardado.')
+        save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled)
+        button_instrucc = st.caption('Realiza un cambio en la evaluación o comentario para habilitar el botón de guardado.')
         if save_eval_button:
             st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
             st.session_state.save_file += ('# COMMENT: {}\n'.format(comment_text))
