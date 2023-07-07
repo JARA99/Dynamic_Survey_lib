@@ -151,7 +151,7 @@ def make_closing():
             'Como calificarías la certeza el modelo:',
             options=opts,format_func = get_eval_label,value = 50,key='eval_slider',on_change=eval_done)
         
-        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text')
+        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text',on_change=eval_done)
 
         closing_instructions = st.caption('Por favor presiona el botón **:green["Guardar y enviar"]** para que tus resultados y evaluación sean tomados en cuenta de forma **anónima**. Si lo deseas puedes volver a tomar el cuestionario ya que el objetivo del estudio no es recaudar datos de hobbies sino evaluar el modelo.')
 
@@ -163,6 +163,7 @@ def make_closing():
             gh_write(st.session_state.save_file)
             st.session_state.save_file = '# NEW ENTRY\n'
             st.session_state.save_button_disabled = True
+            make_closing()
             st.write('### :smile: ¡Gracias por tu evaluación! :smile:')
             # st.write('Evaluación guardada. Por favor descarga tus resultados y envíalos a: [{0}](mailto:{0}?subject=[EPS%Response])'.format(DEFS.EMAIL))
             # st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
