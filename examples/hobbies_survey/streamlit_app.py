@@ -70,7 +70,7 @@ if 'save_button_disabled' not in st.session_state:
 # ----------------------------------------------------------------------------------------------------------------------
 title_view = st.empty()
 instructions_view = st.expander('Instrucciones')
-instructions_view.write('A continuación se te presentarán una serie de afirmaciones, por favor indica en qué medida estas representan tu personalidad, gustos y preferencias. Si la afirmación te representa, seleccione algún porcentaje en la escala de **:green["De acuerdo"]** (hacia la derecha), de lo contrario selecciona un porcentaje en la escala de **:green["En desacuerdo"]** (hacia la izquierda).\n\nAl finalizar se te presentará un resumen de las conclusiones del modelo y un espacio para que evalúes el mismo, por favor recuerda **:green[guardar y enviar]** el cuestionario para que tus respuestas y evaluación puedan ser tomadas en cuenta.')
+instructions_view.write('A continuación se te presentarán una serie de afirmaciones, por favor indica en qué medida estas representan tu personalidad, gustos y preferencias. Si la afirmación te representa, seleccione algún porcentaje en la escala de **:green["De acuerdo"]** (hacia la derecha), de lo contrario selecciona un porcentaje en la escala de **:green["En desacuerdo"]** (hacia la izquierda).\n\nAl finalizar se te presentará un resumen de las conclusiones del modelo y un espacio para que evalúes el mismo, por favor recuerda **:green[guardar y enviar]** el cuestionario para que tus respuestas y evaluación puedan ser tomadas en cuenta.\n\nEl objetivo de este cuestionario no es recopilar datos de tus preferencias en hobbies sino evaluar el modelo de Machine Learning sobre el cuál el cuestionario ha sido desarrollado.')
 q_devider_t = st.divider()
 question_view = st.empty()
 next_button_view = st.empty()
@@ -143,20 +143,20 @@ def make_closing():
             emojicols = st.columns([1,1,1])
             emojicols[1].write('# :astonished::confounded::sweat:')
             st.write('#### ¡Lo sentimos! Pero no hemos encontrado un hobby que se ajuste a tus preferencias.')
-        st.write('##### {}'.format('Evalúa el desempeño del modelo:'))
+        st.write('#### {}'.format('Evalúa el desempeño del modelo:'))
 
         opts = np.arange(0,105,5)
         
         eval_value = st.select_slider(
-            'eval',label_visibility='hidden',
+            'Como calificarías la certeza el modelo:',
             options=opts,format_func = get_eval_label,value = 50,key='eval_slider',on_change=eval_done)
         
-        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text',on_change=eval_done)
+        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text')
 
         closing_instructions = st.caption('Por favor presiona el botón **:green["Guardar y enviar"]** para que tus resultados y evaluación sean tomados en cuenta de forma **anónima**. Si lo deseas puedes volver a tomar el cuestionario ya que el objetivo del estudio no es recaudar datos de hobbies sino evaluar el modelo.')
 
         save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled)
-        button_instrucc = st.caption('Realiza un cambio en la evaluación o comentario para habilitar el botón de guardado.')
+        button_instrucc = st.caption('Realiza un cambio en la evaluación para habilitar el botón de guardado.')
         if save_eval_button:
             st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
             st.session_state.save_file += ('# COMMENT: {}\n'.format(comment_text))
