@@ -156,7 +156,7 @@ def make_closing():
         closing_instructions = st.caption('Por favor presiona el botón **:green["Guardar y enviar"]** para que tus resultados y evaluación sean tomados en cuenta de forma **anónima**. Si lo deseas puedes volver a tomar el cuestionario ya que el objetivo del estudio no es recaudar datos de hobbies sino evaluar el modelo.')
 
         save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled)
-        button_instrucc = st.caption('Realiza un cambio en la evaluación o comentario para habilitar el botón de guardado.')
+        button_instrucc = st.caption('Realiza un cambio en la evaluación o comentario para habilitar el botón de guardado. Una vez guardado el botón se deshabilitará y no podrás volver a enviar tu evaluación, pero puedes volver a tomar el cuestionario y enviar una nueva.')
         if save_eval_button:
             st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
             st.session_state.save_file += ('# COMMENT: {}\n'.format(comment_text))
