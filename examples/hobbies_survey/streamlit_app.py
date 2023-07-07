@@ -10,10 +10,29 @@ import definitions as DEFS
 from pydyn_surv.classes import survey
 import random as rnd
 
-st.set_page_config(initial_sidebar_state="collapsed") 
+from github import Github
+from github import Auth
 
 # ----------------------------------------------------------------------------------------------------------------------
+# CONFIGURATIONS:
+# ----------------------------------------------------------------------------------------------------------------------
+st.set_page_config(initial_sidebar_state="collapsed") 
+# ----------------------------------------------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------------------------------
+# CONSTANTS:
+# ----------------------------------------------------------------------------------------------------------------------
+Q_AMT = 30
+NO_TENDENCE_LIMIT = 3
+GITHUB_REPO = 'streamlit-pygithub-storage'
+GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+auth = Auth.Token(GITHUB_TOKEN)
+g = Github(auth=auth)
+# ----------------------------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------------------------------
+# SESSION STATE:
+# ----------------------------------------------------------------------------------------------------------------------
 if 's0' not in st.session_state:
     st.session_state.s0 = get_surveys_from_excel()
 s0 = st.session_state.s0
@@ -28,15 +47,6 @@ s2 = st.session_state.s2
 
 hobbies_survey = s0[0]
 
-# ----------------------------------------------------------------------------------------------------------
-
-
-
-Q_AMT = 30
-NO_TENDENCE_LIMIT = 3
-
-
-
 if 'no_tendence' not in st.session_state:
     st.session_state['no_tendence'] = 0
 if 'q_count' not in st.session_state:
@@ -50,8 +60,14 @@ if 'current_surveys' not in st.session_state:
 if 'current_surveys_probs' not in st.session_state:
     st.session_state['current_surveys_probs'] = []
 if 'save_file' not in st.session_state:
-    st.session_state['save_file'] = ''
-    
+    st.session_state['save_file'] = '# NEW ENTRY\n'
+if 'save_button_disabled' not in st.session_state:
+    st.session_state['save_button_disabled'] = True
+# ----------------------------------------------------------------------------------------------------------------------  
+
+# ----------------------------------------------------------------------------------------------------------------------
+# PAGE LAYOUT:
+# ----------------------------------------------------------------------------------------------------------------------
 title_view = st.empty()
 instructions_view = st.expander('Instrucciones')
 instructions_view.write('A continuación se le precentarán una serie de afirmaciones, por favor indique en qué medida estas están de acuerdo con su personalidad, gustos y preferencias. Si una afirmación no coincide con algo que usted diría punteela con mayor porcentaje de **:green["En desacuerdo"]**, en caso contrario punteela con mayor porcentaje de **:green["De acuerdo"]**.\n\nAl finalizar se le presentará un resumen de las conclusiones del modelo y una evaluación del mismo.')
@@ -63,8 +79,11 @@ q_devider_b = st.divider()
 # blind_evaluation_view = st.empty()
 results_view = st.empty()
 # model_evaluation_view = st.empty()
+# ----------------------------------------------------------------------------------------------------------------------
 
-
+# ----------------------------------------------------------------------------------------------------------------------
+# FUNCTIONS:
+# ----------------------------------------------------------------------------------------------------------------------
 def generate_q():
     # print('Generating new question...')
     st.session_state.current_item, st.session_state.current_item_question_text = get_q()
@@ -102,6 +121,9 @@ def get_q():
 
     return item_, item_question_text
 
+def eval_done():
+    st.session_state.save_button_disabled = False
+
 def make_closing():
     question_view.empty()
     next_button_view.empty()
@@ -127,13 +149,21 @@ def make_closing():
         
         eval_value = st.select_slider(
             'eval',label_visibility='hidden',
-            options=opts,format_func = get_eval_label,value = 50,key='eval_slider')
+            options=opts,format_func = get_eval_label,value = 50,key='eval_slider',on_change=eval_done)
         
-        save_eval_button = st.button('Guardar evaluación')
+        comment_text = st.text_input('Comentario (opcional):','',50,key='comment_text')
+
+        closing_instructions = st.caption('Por favor presiona el botón **:green["Guardar y enviar"]** para que tus resultados y evaluación sean tomados en cuenta de forma **anónima**. Si lo deseas puedes volver a tomar el cuestionario ya que el objetivo del estudio no es recaudar datos de hobbies sino evaluar el modelo.')
+
+        save_eval_button = st.button('Guardar y enviar',disabled=st.session_state.save_button_disabled,help='Mueve el slider de evaluación para activar el guardado.')
         if save_eval_button:
             st.session_state.save_file += ('# EVALUATION: {}\n'.format(eval_value))
-            st.write('Evaluación guardada. Por favor descarga tus resultados y envíalos a: [{0}](mailto:{0}?subject=[EPS%Response])'.format(DEFS.EMAIL))
-            st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
+            st.session_state.save_file += ('# COMMENT: {}\n'.format(comment_text))
+            gh_write(st.session_state.save_file)
+            st.session_state.save_file = '# NEW ENTRY\n'
+            st.session_state.save_button_disabled = True
+            # st.write('Evaluación guardada. Por favor descarga tus resultados y envíalos a: [{0}](mailto:{0}?subject=[EPS%Response])'.format(DEFS.EMAIL))
+            # st.download_button('Descargar resultados',data=st.session_state.save_file,file_name='resultados.csv',mime='text/csv')
 
 def make_graph():
     all_l0 = np.array(s0).flatten()
@@ -188,7 +218,22 @@ def make_graph():
 
     return l0_fig, l1_fig, l2_fig
 
+def gh_write(text,file_path='EPS2023/records.csv'):
+    r, rf,ft = gh_get_file(file_path)
+    t = ft + text
+    r.update_file(rf.path,'streamlit commit',t,rf.sha,branch='main')
+    
 
+def gh_get_file(file_path='EPS2023/records.csv'):
+    repo = g.get_user().get_repo(GITHUB_REPO)
+    repo_file = repo.get_contents(file_path)
+    file_text = repo_file.decoded_content.decode()
+    return repo, repo_file, file_text
+# --------------------------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------------------------
+# PAGE LOGIC:
+# --------------------------------------------------------------------------------------------------------------------
 title_view.title('Encuesta de hobbies')
 enumeration_view.caption('<center> {}/{} </center>'.format(st.session_state.q_count,Q_AMT),True)
 
@@ -225,3 +270,4 @@ st.sidebar.write('Current item question text: {}'.format(st.session_state.curren
 st.sidebar.write('Current surveys: {}'.format(st.session_state.current_surveys))
 st.sidebar.write('Current surveys probabilities: {}'.format(st.session_state.current_surveys_probs))
 st.sidebar.write('S0 history: {}'.format(s0[0].get_items().answer_history()))
+# --------------------------------------------------------------------------------------------------------------------
