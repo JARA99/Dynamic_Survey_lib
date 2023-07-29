@@ -38,11 +38,13 @@ def l0_prob(self:survey.survey,extra = 4) -> float:
     return p*extra
 def l1_prob(self:survey.survey,extra = 1) -> float:
     p = 1 - (self.launch_count/self.dimension)
+    # p *= (self.get_self_label()/2)
     if p <= 0:
         p = 1/len(self.categories)
     return p*extra
 def l2_prob(self:survey.survey,extra = 1.5) -> float:
     p = 1 - (self.launch_count/self.dimension)
+    # p *= (self.get_self_label()/2)
     if p <= 0:
         p = 1/len(self.categories)
     return p*extra

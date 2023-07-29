@@ -238,13 +238,13 @@ def gradient_descent(loss,dd_loss,training_dataset:Iterable,eta:float = 0.01,ite
         pass
 
     for iteration in range(iterations):
-        loss_value = sum(loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
         gradient = sum(dd_loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
         w = w - (eta * gradient)
 
         if verbose:
             print('iteration {}:'.format(iteration+1),'w = {},'.format(w),'Loss(w) = {}'.format(loss_value))
-
+        
+        loss_value = sum(loss(w,x,y) for x,y in training_dataset)/len(training_dataset)
         if loss_value == 0:
             break
         
@@ -281,11 +281,9 @@ def stocastic_gradient_descent(loss,dd_loss,training_dataset:Iterable,init_eta:f
         Trained width
     """
     dimension = training_dataset[0][0].shape[0]
-    try:
-        if w == None:
-            w = np.zeros(dimension)
-    except:
-        pass
+    
+    if w is None:
+        w = np.zeros(dimension)
 
     n = 0
 

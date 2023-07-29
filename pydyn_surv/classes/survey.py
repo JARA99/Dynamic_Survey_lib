@@ -166,7 +166,7 @@ class survey:
 
         Parameters
         ----------
-        category : pydyn_surv.classes.category
+        category : list|str
             The origin category for the survey.
         """
         if not isinstance(category,list):
