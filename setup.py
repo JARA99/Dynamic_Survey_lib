@@ -10,7 +10,7 @@ setup(
     url='https://github.com/JARA99/Dynamic_Survey_lib',
     author='Jorge Alejandro Rodríguez Aldana',
     author_email='jorgealejandro1999@gmail.com',
-    license='Proprietary License',
+    license='License :: OSI Approved :: MIT License',
     packages=['pydyn_surv'],
     install_requires=requirements,
 
