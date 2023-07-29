@@ -1,11 +1,11 @@
 import numpy as np
-from ..LinearClassifier import basic_linear_classifier as blc
+from . import ml
 import math
 # from .item import item
 # from .survey import survey
 
 SELF_STD_W,SELF_COUNT_W,CAT_STD_W,CAT_COUNT_W = 0.5,-0.5,0.25,-0.25
-PREDICTOR = blc.reg_predictor
+PREDICTOR = ml.reg_predictor
 
 def FUNC_FALSE(*args,**kargs):
     return False
@@ -13,10 +13,10 @@ def FUNC_FALSE(*args,**kargs):
 def FUNC_TRUE(*args,**kargs):
     return True
 
-def TRAIN_FUNCTION(self,gradient_des:callable = blc.gradient_descent,eta:float = 0.1,iter_:int = 2000,verbose:bool = False):
+def TRAIN_FUNCTION(self,gradient_des:callable = ml.gradient_descent,eta:float = 0.1,iter_:int = 2000,verbose:bool = False):
     dataset = self.get_training_dataset()
     w = self.get_weight()
-    trained_w = gradient_des(blc.squared_loss,blc.squared_loss_derivative,dataset,eta,iter_,verbose,w)
+    trained_w = gradient_des(ml.squared_loss,ml.squared_loss_derivative,dataset,eta,iter_,verbose,w)
 
     return trained_w
 
