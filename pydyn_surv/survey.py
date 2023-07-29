@@ -8,6 +8,9 @@ LAUNCH_FORMAT = [
     '-----------------------------------------------------------\n {}',
     '    {}) {}',
     '-----------------------------------------------------------']
+"""
+List containing the strings with the format to display an intem in the terminal. The first string is the format for the item's statement, the second is the format for the item's answer number and the third is the format for the closing.
+"""
 
 
 class survey:
@@ -29,6 +32,43 @@ class survey:
         return total
 
     def __init__(self,items:list = [],name:str = '',init_training_dataset:list = None,w:np.ndarray = None,predictor = funcs.PREDICTOR,launch_format = LAUNCH_FORMAT,categories:list = [],origin:list = [],offspring:list = [],origin_category = None, condition_function:callable = funcs.FUNC_TRUE, probability_function:callable = funcs.FUNC_TRUE, train_function:callable = funcs.TRAIN_FUNCTION) -> None:
+        """Creates a survey instance.
+        
+        Parameters
+        ----------
+        items : list, optional
+            The list of items that the survey will contain, by default []. The items can be added later with the methods `set_items` and `add_item`. The items could be pydyn_surv.item.item instances or dicts with the parameters to create them.
+
+        name : str, optional    
+            The name of the survey, by default ''. It is also used to set the origin category name in case it is not set with the parameter `origin_category`.
+        init_training_dataset : list, optional
+            The initial trainin dataset in case, by default None.
+        w : np.ndarray, optional
+            The initial weight vector, by default None. If it is not set, it will be set to a vector of zeros with the same dimension as the items.
+        predictor : callable, optional
+            The predictor function, by default `pydyn_surv.funcs.PREDICTOR`. It can be changed later with the method `set_predictor`.
+        launch_format : list, optional
+            The format to display the items in the terminal, by default `pydyn_surv.survey.LAUNCH_FORMAT`.
+        categories : list, optional
+            The list of categories that the survey will contain, by default []. The categories can be added later with the methods `set_categories` and `add_category`.
+        origin : list, optional
+            The list of surveys that are the origin of the survey, by default []. The origin can be changed later with the method `set_origin`.
+        offspring : list, optional
+            The list of surveys that are the offspring of the survey, by default []. The offspring can be changed later with the method `set_offspring`.
+        origin_category : str, optional
+            The name of the origin category, by default None. If it is not set, it will be set to the name of the survey.
+        condition_function : callable, optional
+            The condition function, by default `pydyn_surv.funcs.FUNC_TRUE`. It can be changed later with the method `set_condition_function`.
+        probability_function : callable, optional
+            The probability function, by default `pydyn_surv.funcs.FUNC_TRUE`. It can be changed later with the method `set_probability_function`.
+        train_function : callable, optional
+            The train function, by default `pydyn_surv.funcs.TRAIN_FUNCTION`. It can be changed later with the method `set_train_function`.
+
+        Returns
+        -------
+        pydyn_surv.survey.survey
+            The survey instance.
+        """
         survey.instances.append(self)
         self.name = name
         self.training_dataset = []
@@ -131,7 +171,7 @@ class survey:
 
         Parameters
         ----------
-        origin : pydyn_surv.classes.survey
+        origin : pydyn_surv.survey.survey
             The origin survey to be added.
         """
         if origin == self:
@@ -149,7 +189,7 @@ class survey:
 
         Parameters
         ----------
-        offspring : pydyn_surv.classes.survey
+        offspring : pydyn_surv.survey.survey
             The offspring survey to be added.
         """
         if offspring == self:
@@ -259,6 +299,12 @@ class survey:
         self.category_answer_history.append([])
     
     def get_training_dataset(self) -> list:
+        """Returns the training dataset of the survey.
+        Returns
+        -------
+        training_dataset : list
+            A list containing the training dataset. Each element is a tuple containing the feature vector and the label.
+        """
         if isinstance(self.init_training_dataset,list):
             training_dataset = self.init_training_dataset
         else:
@@ -273,13 +319,25 @@ class survey:
     
     def get_weight(self) -> np.ndarray:
         """Returns the current weight vector of the survey.
+        Returns
+        -------
+        w : np.ndarray
+            The current weight vector of the survey.
         """
         return self.w
 
     def update_training_dataset(self) -> None:
+        """Updates the training dataset of the survey.
+        """
         self.training_dataset = self.get_training_dataset()
 
-    def get_feature_vectors(self) -> None:
+    def get_feature_vectors(self) -> list:
+        """Returns the feature vectors of the items in the survey.
+        Returns
+        -------
+        feature_vectors : list
+            A list containing the feature vectors of the items in the survey.
+        """
         feature_vectors = []
         for item_ in self.items:
             # item_:item
@@ -289,6 +347,18 @@ class survey:
         return feature_vectors
 
     def get_predicted_labels(self,w:np.ndarray,predictor) -> list:
+        """Returns the predicted labels of the items in the survey.
+        Parameters
+        ----------
+        w : np.ndarray
+            The weight vector.
+        predictor : function
+            The predictor function.
+        Returns
+        -------
+        predicted_labels : list
+            A list containing the predicted labels of the items in the survey.
+        """
         predicted_labels = []
         for item_ in self.items:
             item_:item
@@ -300,6 +370,12 @@ class survey:
         return predicted_labels
 
     def get_calculated_labels(self) -> list:
+        """Returns the calculated labels of the items in the survey.
+        Returns
+        -------
+        calculated_labels : list
+            A list containing the calculated labels of the items in the survey.
+        """
         calculated_labels = []
         for item_ in self.items:
             item_:item
@@ -310,35 +386,79 @@ class survey:
         return calculated_labels
     
     def update_predicted_labels(self) -> None:
+        """Updates the predicted labels of the items in the survey via `get_predicted_labels` method with the survey's weight vector and predictor function.
+        """
         self.predicted_item_labels = self.get_predicted_labels(self.w,self.predictor)
     
     def update_calculated_labels(self) -> None:
+        """Updates the calculated labels of the items in the survey via `get_calculated_labels` method.
+        """
         self.calculated_item_labels = self.get_calculated_labels()
     
     def update_all_labels(self) -> None:
+        """Updates the predicted and calculated labels of the items in the survey.
+        """
         self.update_calculated_labels()
         self.update_predicted_labels()
 
     def set_w(self,w:np.ndarray) -> None:
+        """Sets the weight vector of the survey.
+        Parameters
+        ----------
+        w : np.ndarray
+            The weight vector.
+        """
         self.w = w
         self.w_history.append(w)
         # print('Weight setted to: {}'.format(self.w))
     
     def set_predictor(self,predictor) -> None:
+        """Sets the predictor function of the survey.
+        Parameters
+        ----------
+        predictor : function
+            The predictor function.
+        """
         self.predictor = predictor
 
     def print_items(self) -> None:
+        """Prints the items in the survey.
+        """
         for item_ in self.items:
             item_:item
             print('{}] {}'.format(item_.id, item_.question_text))
     
     def print_item_info(self,item_:item) -> None:
+        """Prints the information of an item in the survey.
+        Parameters
+        ----------
+        item_ : item
+            The item to print the information of.
+        """
         if item_ in self.items:
             item_.print_values()
         else:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
     
     def launch_random(self,random_func:callable=rnd_choices,all_zero_to_one=False) -> None:
+        """Returns a random item in the survey.
+        Parameters
+        ----------
+        random_func : callable, optional
+            The function to use to randomly select an item, by default `random.choices.rnd_choices`.
+        all_zero_to_one : bool, optional
+            If `True`, if the probabilities of all the items are equal to zero, it turns them to one, by default False.
+        Returns
+        -------
+        item_ : pydyn_surv.item.item
+            The randomly selected item.
+        item_.question_text : str
+            The question text of the randomly selected item.
+        item_.answers_text : list
+            The answers text of the randomly selected item.
+        item_.answers_values : list
+            The answers values of the randomly selected item.
+        """
         # self.update_all()
         items_ = self.get_items()
         item_ = random_func(items_,items_.probabilities(all_zero_to_one=all_zero_to_one))[0]
@@ -346,6 +466,14 @@ class survey:
         return item_,item_.question_text, item_.answers_text, item_.answers_values
 
     def launch_on_terminal(self,item_:item,force_answer:bool = False) -> None:
+        """Launches an item on the terminal.
+        Parameters
+        ----------
+        item_ : item
+            The item to launch.
+        force_answer : bool, optional
+            If `True`, it forces the answering without checking the input, by default False.
+        """
         # self.update_all()
         if item_ not in self.items:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
@@ -408,6 +536,12 @@ class survey:
         return self.category_answer_history
 
     def print_info(self,print_items:bool = False) -> None:
+        """Prints the information of the survey.
+        Parameters
+        ----------
+        print_items : bool, optional
+            If `True`, it prints the items in the survey, by default False.
+        """
         # self.name = name
         # self.training_dataset = init_training_dataset
         # self.item_amount = len(items)
@@ -435,6 +569,12 @@ class survey:
             self.print_items()
 
     def update_all(self,exclude_calculated_labels:bool = False) -> None:
+        """Updates all the information of the survey.
+        Parameters
+        ----------
+        exclude_calculated_labels : bool, optional
+            If `True`, it excludes the calculated labels from the update, by default False.
+        """
         self.update_training_dataset()
         if exclude_calculated_labels:
             self.update_predicted_labels()
@@ -442,6 +582,12 @@ class survey:
             self.update_all_labels()
 
     def get_self_label(self):
+        """Gets the predicted label of a survey based on the origin category and the origin.
+        Returns
+        -------
+        label : float
+            The label of the survey.
+        """
 
         labels = []
 
@@ -472,16 +618,38 @@ class survey:
         return self.label
 
     def condition(self,*args,**kwargs) -> bool:
-        """Returns True if the condition for launching the survey is met, False otherwise. This method is a wrapper for the _condition method, which is setted by the set_condition_function method.
+        """Returns True if the condition for launching the survey is met, False otherwise. This method is a wrapper for the _condition method, which is setted by the set_condition_function method. It also stores the last condition state in the last_condition_state attribute.
+        Parameters
+        ----------
+        *args : list
+            The arguments for the condition function.
+        **kwargs : dict
+            The keyword arguments for the condition function.
+        Returns
+        -------
+        condition : bool
+            True if the condition for launching the survey is met, False otherwise.
         """
         self.last_condition_state = self._condition(self,*args,**kwargs)
         return self.last_condition_state
     
     def set_condition_function(self,condition_function:callable) -> None:
+        """Sets the condition function for the survey. The condition function must be a callable that returns a boolean value. It may or may not depend on the survey instance, but it must be able to handle the survey instance as an argument.
+        Parameters
+        ----------
+        condition_function : callable
+            The condition function.
+        """
         self._condition = condition_function
 
     def probability(self,*args,**kargs) -> float:
-        """Returns the probability of the survey being launched. This method is a wrapper for the _probability method, which is the one that actually calculates the probability.	
+        """Returns the probability of the survey being launched. This method is a wrapper for the _probability method, which is the one that actually calculates the probability.
+        Parameters
+        ----------
+        *args : list
+            The arguments for the probability function.
+        **kwargs : dict
+            The keyword arguments for the probability function.
         """
         return self._probability(self,*args,**kargs)
     
@@ -507,7 +675,13 @@ class survey:
             item_.set_probability_function(probability_function)
 
     def train(self,*args,**kwargs) -> np.ndarray:
-        """Trains the survey. This method is a wrapper for the _train method, which is the one that actually trains the survey.
+        """Trains the survey. This method is a wrapper for the _train method, which is the one that actually trains the survey.`
+        Parameters
+        ----------
+        *args : list
+            The arguments for the train function.
+        **kwargs : dict
+            The keyword arguments for the train function.
         """
         self.update_all()
         trained_w = self._train(self,*args,**kwargs)
@@ -524,6 +698,22 @@ class survey:
         self._train = train_function
 
     def get_surveys(self,force:bool = False, force_offspring = False,*args,**kwargs) -> pydyn_surv_list:
+        """Returns a list with the surveys avaiable to be launched from the current survey, e.i. the current survey and the offspring surveys that meet the condition for launching. If the force argument is set to True, it returns the offspring surveys that meet the condition even if the condition is not met for the current survey.
+        Parameters
+        ----------
+        force : bool, optional
+            If `True`, it returns the offspring surveys that meet the condition even if the condition is not met for the current survey, by default False.
+        force_offspring : bool, optional
+            Represents the force state for the offspring surveys, since this is a recursive method, by default False.
+        *args : list
+            The arguments for the condition function.
+        **kwargs : dict
+            The keyword arguments for the condition function.
+        Returns
+        -------
+        surveys : pydyn_surv_list
+            The list of surveys avaiable to be launched from the current survey.
+        """
         if self.condition(*args,**kwargs) or force:
             if any(self.get_items().probabilities()):
                 surveys = pydyn_surv_list([self])
@@ -543,8 +733,21 @@ class survey:
     # def get_items and def get_items_probabilities: to be implemented
 
     def get_items(self) -> pydyn_surv_list:
+        """Returns a list with the items of the survey.
+        Returns
+        -------
+        items : pydyn_surv_list
+            The list of items of the survey.
+        """
         return self.items
 
 
     def get_weight_history(self) -> list:
+        """Returns a list with the weight history of the survey.
+        Returns
+        -------
+        w_history : list
+            The list of weight history of the survey.
+        """
+        
         return self.w_history

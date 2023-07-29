@@ -12,6 +12,17 @@ DEFAULT_PARAMETERS_DICT = {
     'id':None,
     'origin_survey':None,
 }
+"""
+Default parameters for the item class initialization. The parameters are:
+* question: The question text. Default: ''.
+* answers: The answers text in a list. Default: [].
+* answers_values: The values for each answer. Default: [-2,-1,0,1,2].
+* category_vector: The category vector for the item. Default: [].
+* answer_range: The range of the answer values. Default: (-2,2).
+* expert_extra: The expert extra value for the item. Default: 0.
+* id: The id for the item. Default: None.
+* origin_survey: The origin survey for the item. Default: None.
+"""
 
 class item:
     """ Class that represents an item (question) in the survey, and stores some useful data like the user answer history.
@@ -59,12 +70,48 @@ class item:
         Parameters
         ----------
         parameters_dict : dict, optional
-            Dictionary containing the atributtes for this instance, by default DEFAULT_PARAMETERS_DICT
+            Dictionary containing the atributtes for this instance, by default pydyn_surv.item.DEFAULT_PARAMETERS_DICT
+        id_ : int, optional
+            Id for the item, by default None
+        origin_survey : pydyn_surv.classes.survey, optional
+            Origin survey for the item, by default None
+        probability_function : function, optional
+            Probability function for the item, by default pydyn_surv.funcs.FUNC_LIKERT_ITEM_PROBABILITY
         
         Returns
         -------
         pydyn_surv.item.item
             An item instance with the initialization parameters.
+        
+        Usage example
+        -------------
+        The following example shows how to create an item instance, answer it once and print the information and the training set.
+        ```python	
+        from pydyn_surv.item import item
+
+        # Define a dictionary with the item information
+        item_dict = {
+            'question':'I like winter more than summer',
+            'answers':['Totally disagree','Disagree','Neutral','Agree','Totally agree'],
+            'answers_values':[-2,-1,0,1,2],
+            'category_vector':[1,-1],
+            'expert_extra':0,
+            'id':1
+        }
+
+        # Create an item instance using the dictionary data
+        item_instance = item(item_dict)
+
+        # Answer the item with a score of -1 that corresponds to 'Disagree'
+        item_instance.answer(-1)
+
+        # Print item information
+        item_instance.print_info()
+
+        # Get the training set and print it
+        print('The training dataset is:{}'.format(item_instance.get_dataset_history()))
+        ```
+
         """
 
         item.instances.append(self)
@@ -171,7 +218,7 @@ class item:
         return self.predicted_label
 
     def update_mean_label(self) -> None:
-        """Calculates the mean label for the item and assign it to the instance atribute.	
+        """Calculates the mean label for the item and assign it to the instance atribute mean_label.	
         """
         if self.answer_history == []:
             self.mean_label = np.nan
