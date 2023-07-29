@@ -1,6 +1,6 @@
-from pydyn_surv.classes import survey, item
-from pydyn_surv.LinearClassifier import basic_linear_classifier as blc
-from pydyn_surv.classes import funcs
+from pydyn_surv import survey, item
+from pydyn_surv import ml
+from pydyn_surv import funcs
 import pandas as pd
 import numpy as np
 import random as rnd
@@ -20,8 +20,8 @@ ETA_ST = 1
 ITER = 2000
 VERBOSE = False
 
-PREDICTOR = blc.reg_predictor
-GRADIENT_DEC = blc.gradient_descent
+PREDICTOR = ml.reg_predictor
+GRADIENT_DEC = ml.gradient_descent
 
 ANSWERS = ['Muy en desacuerdo','En desacuerdo','Ni de acuerdo ni en desacuerdo','De acuerdo','Muy de acuerdo']
 ANSWER_VALUES = [-2,-1,0,1,2]

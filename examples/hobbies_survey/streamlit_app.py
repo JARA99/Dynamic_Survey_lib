@@ -7,7 +7,7 @@ import pandas as pd
 from hobbies_survey import get_surveys_from_excel, l1_prob, l1_condition, l1_item_prob, l2_prob, l2_condition, l2_item_prob
 import definitions as DEFS
 
-from pydyn_surv.classes import survey
+from pydyn_surv import survey
 import random as rnd
 
 from github import Github

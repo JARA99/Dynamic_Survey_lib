@@ -1,5 +1,5 @@
-from pydyn_surv.classes import survey, item
-from pydyn_surv.classes import funcs
+from pydyn_surv import survey, item
+from pydyn_surv import funcs
 import definitions as DEFS
 import pandas as pd
 import numpy as np
