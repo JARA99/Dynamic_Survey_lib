@@ -64,7 +64,7 @@ class item:
                 item_list.append(item_)
         return item_list
 
-    def __init__(self,parameters_dict:dict = DEFAULT_PARAMETERS_DICT,id_ = None,origin_survey = None, probability_function = funcs.FUNC_LIKERT_ITEM_PROBABILITY):
+    def __init__(self,parameters_dict:dict = DEFAULT_PARAMETERS_DICT,id_ = None,origin_survey = None, probability_function:callable = funcs.FUNC_LIKERT_ITEM_PROBABILITY):
         """Creates an instance of an pydyn_surv.item.
 
         Parameters
@@ -73,9 +73,9 @@ class item:
             Dictionary containing the atributtes for this instance, by default pydyn_surv.item.DEFAULT_PARAMETERS_DICT
         id_ : int, optional
             Id for the item, by default None
-        origin_survey : pydyn_surv.classes.survey, optional
+        origin_survey : pydyn_surv.survey, optional
             Origin survey for the item, by default None
-        probability_function : function, optional
+        probability_function : callable, optional
             Probability function for the item, by default pydyn_surv.funcs.FUNC_LIKERT_ITEM_PROBABILITY
         
         Returns
