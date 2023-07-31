@@ -440,12 +440,12 @@ class survey:
         else:
             raise ValueError('Item {} is not in survey {}.'.format(item_.id,self.name))
     
-    def launch_random(self,random_func:callable=rnd_choices,all_zero_to_one=False) -> None:
+    def launch_random(self,random_func:callable=rnd_choices,all_zero_to_one=False) -> tuple:
         """Returns a random item in the survey.
         Parameters
         ----------
         random_func : callable, optional
-            The function to use to randomly select an item, by default `random.choices.rnd_choices`.
+            The function to use to randomly select an item, by default `random.choices`.
         all_zero_to_one : bool, optional
             If `True`, if the probabilities of all the items are equal to zero, it turns them to one, by default False.
         Returns

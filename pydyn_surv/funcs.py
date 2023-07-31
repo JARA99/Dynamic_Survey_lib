@@ -9,11 +9,19 @@ PREDICTOR = ml.reg_predictor
 
 def FUNC_FALSE(*args,**kargs):
     """Returns False. Useful for the 'condition' and 'probability' methods on `pydyn_surv.survey.survey` and `pydyn_surv.item.item` objects.
+    Returns
+    -------
+    bool
+        False.
     """
     return False
 
 def FUNC_TRUE(*args,**kargs):
     """Returns True. Useful for the 'condition' and 'probability' methods on `pydyn_surv.survey.survey` and `pydyn_surv.item.item` objects.
+    Returns
+    -------
+    bool
+        True.
     """
     return True
 
@@ -111,7 +119,7 @@ def FUNC_LIKERT_ITEM_PROBABILITY_WITH_STATISTICS(self,axis_move = 2,not_repeated
     axis_move: int
         The axis move.
     not_repeated_since: int
-        The number of launches since the last launch of the item.
+        The minimum number of launches since the last launch of the item.
     std_weight: float
         The weight of the standard deviation of the item history in the probability.
     cat_std_weight: float
