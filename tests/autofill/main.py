@@ -1,97 +1,136 @@
 import simple_user as su
 import defs
-from pydyn_surv import ml
 import numpy as np
+from matplotlib import pyplot as plt
+import time
+from pydyn_surv import funcs
 
-if False:
+user_amt = 6
+analysis_dim = 5
+iters_amnt = 730
 
-    iters_amnt = 365
+analysis_data = dict()
 
-    su.one_user('one_user_tests/base','Evolución del peso\n',
-                iter_amnt=iters_amnt,in_range_answer=True)
+for user_i in range(user_amt):
+    user_name = chr(ord('A')+user_i)
+    print('Executing user {}'.format(user_name))
 
-    # su.one_user('one_user_tests/t02','Respuestas sin acotar, sin cambio de peso',
-    #             iter_amnt=iters_amnt,in_range_answer=False)
-
-    su.one_user('one_user_tests/new_train','Evolución del peso\nFunción de entrenamiento redefinida',
-                iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function})
-
-
-    iters_amnt = 730
-
-    # def ct(*args,**kwargs):
-    #     return defs.custom_train_function(*args,tds_len=50,**kwargs)
-
-
-    su.one_user('one_user_tests/wchange_new_train','Evolución del peso\nCambio de peso esperado\nFunción de entrenamiento redefinida',
-                iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-                change=True,change_at=365,change_to=[-2,0.5,0,1,2])
-
-    su.one_user('one_user_tests/wchange','Evolución del peso\nCambio de peso esperado',
-                iter_amnt=iters_amnt,in_range_answer=True,
-                change=True,change_at=365,change_to=[-2,0.5,0,1,2])
-
-
-    iters_amnt = 365
-
-    su.one_user('one_user_tests/base_2','Evolución del peso\n',
-                iter_amnt=iters_amnt,in_range_answer=True,
-                target_w=[0,0.5,1,1.5,2])
+    user_i_w = np.random.uniform(-2.05,2.05,size=analysis_dim)
+    user_i_w = np.round(user_i_w,2)
+    user_i_w_2 = np.random.uniform(-2.05,2.05,size=analysis_dim)
+    user_i_w_2 = np.round(user_i_w_2,2)
+    # user_i_w_string = np.array2string(user_i_w,precision=2,separator=',',sign=' ')
+    user_i_w_1_string = np.array2string(user_i_w,precision=2,separator=',',sign=' ')
+    user_i_w_2_string = np.array2string(user_i_w_2,precision=2,separator=',',sign=' ')
+    user_i_w_string = '{}->{}'.format(user_i_w_1_string,user_i_w_2_string)
     
-    su.one_user('one_user_tests/new_train_2','Evolución del peso\nFunción de entrenamiento redefinida',
-                iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-                target_w=[2,0,1,0,0],fit_answer=False)
+    s_cf, wh_cf, entro_cf, rsq_cf = su.one_user(savename = 'output/current_run/w_histo/{}_cf'.format(user_name),
+                        title = 'Evolución del peso del usuario {}: {}'.format(user_name,user_i_w_string),
+                        iter_amnt=iters_amnt,
+                        target_w=user_i_w,
+                        change=True,
+                        change_to=user_i_w_2,
+                        change_at=200,
+                        # suv_init_kargs={'train_function':defs.custom_train_function},
+                        reduce_iters=True,
+                        in_range_answer=True,
+                        add_noise=True,
+                        fit_answer=True,
+                        get_entropy=True,
+                        get_rsquared=True,
+                        # target_move_func=defs.w_evolution,
+                        dim=analysis_dim,
+    )
 
-iters_amnt = 365
+    s_df, wh_df, entro_df, rsq_df = s_cf, wh_cf, entro_cf, rsq_cf
+    
+    # s_df, wh_df, entro_df, rsq_df = su.one_user(savename = 'output/current_run/w_histo/{}_df'.format(user_name),
+    #                     title = 'Evolución del peso del usuario {}: {}'.format(user_name,user_i_w_string),
+    #                     iter_amnt=iters_amnt,
+    #                     target_w=user_i_w,
+    #                     # change=True,
+    #                     # change_to=user_i_w_2,
+    #                     # change_at=250,
+    #                     suv_init_kargs=dict(),
+    #                     reduce_iters=True,
+    #                     in_range_answer=True,
+    #                     add_noise=True,
+    #                     fit_answer=True,
+    #                     get_entropy=True,
+    #                     get_rsquared=True,
+    #                     # target_move_func=defs.w_evolution,
+    #                     dim=analysis_dim,
+    # )
 
-tsurv = su.one_user('one_user_tests/new_train_2','Evolución del peso con ruido agregado\nFunción de entrenamiento redefinida',
-            iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-1.234,1.423,0.523,0.21,-0.3],fit_answer=False,add_noise=True)
+    
+    # plt.close('all')
 
-tsurv = su.one_user('one_user_tests/basic_2','Evolución del peso con ruido agregado',
-            iter_amnt=iters_amnt,in_range_answer=True,#suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-1.234,1.423,0.523,0.21,-0.3],fit_answer=False,add_noise=True)
+    t_list = np.array([entro_df,rsq_df,entro_cf,rsq_cf]).transpose()
 
-tsurv = su.one_user('one_user_tests/new_train_3','Evolución del peso con ruido agregado\nFunción de entrenamiento redefinida',
-            iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-0.234,0.0423,0.523,0.21,-0.3],fit_answer=False,add_noise=True)
+    # analysis_data[user_name] = pd.DataFrame(t_list,columns=['cf entropy','cf rsquared','df entropy','df rsquared'])
 
-tsurv = su.one_user('one_user_tests/basic_3','Evolución del peso con ruido agregado',
-            iter_amnt=iters_amnt,in_range_answer=True,#suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-0.234,0.0423,0.523,0.21,-0.3],fit_answer=False,add_noise=True)
+    wh_cf = np.array(wh_cf)
+    # Ocurrences of -1,0 and 1 are in each column of wh_cf
+    wh_cf_count = np.apply_along_axis(lambda x: np.bincount(x.astype(int)+1,minlength=3),0,wh_cf)
+    wh_df = np.array(wh_df)
+    # Ocurrences of -1,0 and 1 are in each column of wh_df
+    wh_df_count = np.apply_along_axis(lambda x: np.bincount(x.astype(int)+1,minlength=3),0,wh_df)
 
-tsurv = su.one_user('one_user_tests/new_train_1','Evolución del peso con ruido agregado\nFunción de entrenamiento redefinida',
-            iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-2,-1,0,1,2],fit_answer=False,add_noise=True)
+    # print(t_list)
+    # print(wh_cf)
+    # print(wh_cf_count)
+    # print(wh_df)
+    # print(wh_df_count)
 
-tsurv = su.one_user('one_user_tests/basic_1','Evolución del peso con ruido agregado',
-            iter_amnt=iters_amnt,in_range_answer=True,#suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-2,-1,0,1,2],fit_answer=False,add_noise=True)
+    defs.plot_bars(user_name,wh_cf_count,'_cf',': {}'.format(user_i_w_string),'output/current_run/count_bars/')
+    defs.plot_bars(user_name,wh_df_count,'_df',': {}'.format(user_i_w_string),'output/current_run/count_bars/')
+
+    time.sleep(5)
+    plt.close('all')
+
+    # Save the data to the analysis_data dict:
+    analysis_data[user_name] = {'history':t_list,'count_cf':wh_cf_count,'count_df':wh_df_count}
 
 
-tsurv = su.one_user('one_user_tests/new_train_2_fit','Evolución del peso con ruido agregado\nRespuestas discretizadas\nFunción de entrenamiento redefinida',
-            iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-1.234,1.423,0.523,0.21,-0.3],fit_answer=True,add_noise=True)
+# print(analysis_data)
+# Save history
+for user_name, stored in analysis_data.items():
+    np.savetxt('output/current_run/csv_data/{}_hist.csv'.format(user_name),stored['history'],delimiter=',')
+    np.savetxt('output/current_run/csv_data/{}_count_cf.csv'.format(user_name),stored['count_cf'],delimiter=',')
+    np.savetxt('output/current_run/csv_data/{}_count_df.csv'.format(user_name),stored['count_df'],delimiter=',')
 
-tsurv = su.one_user('one_user_tests/basic_2_fit','Evolución del peso con ruido agregado\nRespuestas discretizadas',
-            iter_amnt=iters_amnt,in_range_answer=True,#suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-1.234,1.423,0.523,0.21,-0.3],fit_answer=True,add_noise=True)
+# Make a plot of the history of the entropy for all users
+entropy_fig, entropy_ax = plt.subplots()
 
-tsurv = su.one_user('one_user_tests/new_train_3_fit','Evolución del peso con ruido agregado\nRespuestas discretizadas\nFunción de entrenamiento redefinida',
-            iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-0.234,0.0423,0.523,0.21,-0.3],fit_answer=True,add_noise=True)
+for user_name, stored in analysis_data.items():
+    entropy_ax.plot(stored['history'][:,0],label='Usuario {}'.format(user_name))
 
-tsurv = su.one_user('one_user_tests/basic_3_fit','Evolución del peso con ruido agregado\nRespuestas discretizadas',
-            iter_amnt=iters_amnt,in_range_answer=True,#suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-0.234,0.0423,0.523,0.21,-0.3],fit_answer=True,add_noise=True)
+entropy_ax.set_title('Entropía del cuestionario por usuario')
+entropy_ax.set_xlabel('Iteración')
+entropy_ax.set_ylabel('Entropía')
+entropy_ax.legend()
 
-tsurv = su.one_user('one_user_tests/new_train_1_fit','Evolución del peso con ruido agregado\nRespuestas discretizadas\nFunción de entrenamiento redefinida',
-            iter_amnt=iters_amnt,in_range_answer=True,suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-2,-1,0,1,2],fit_answer=True,add_noise=True)
+entropy_fig.savefig('output/current_run/all_users/entropy_df.png')
+plt.close(entropy_fig)
 
-tsurv = su.one_user('one_user_tests/basic_1_fit','Evolución del peso con ruido agregado\nRespuestas discretizadas',
-            iter_amnt=iters_amnt,in_range_answer=True,#suv_init_kargs={'train_function':defs.custom_train_function},
-            target_w=[-2,-1,0,1,2],fit_answer=True,add_noise=True)
+# Make a plot of the history of the rsquared for all users
+rsquared_fig, rsquared_ax = plt.subplots()
+
+for user_name, stored in analysis_data.items():
+    rsquared_ax.plot(stored['history'][:,1],label='Usuario {}'.format(user_name))
+
+rsquared_ax.set_title('Coeficiente de determinación del cuestionario por usuario')
+rsquared_ax.set_xlabel('Iteración')
+rsquared_ax.set_ylabel('Coeficiente de determinación')
+rsquared_ax.legend()
+
+rsquared_fig.savefig('output/current_run/all_users/rsquared_df.png')
+plt.close(rsquared_fig)
+
+
+
+    
+
 
 # print(*('{} -> {}\n'.format(x,y) for x,y in tsurv.training_dataset),sep='')
 

@@ -1,0 +1,12 @@
+target w evolve
+
+```python
+def w_evolution(w:np.ndarray):
+    r_w = w.copy()
+    for i in range(len(r_w)):
+        if i%2 == 0:
+            r_w[i] += np.random.normal(-0.0001,0.005,1)[0]
+        else:
+            r_w[i] += np.random.normal(0.0001,0.005,1)[0]
+    return r_w
+```

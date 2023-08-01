@@ -1,0 +1,1 @@
+Simple run with randomness added, but this time the std is equal to 1, pririor it was 0.25
