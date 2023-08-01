@@ -256,7 +256,7 @@ class item:
         """
         self.last_launch = n_launch
 
-    def answer(self,answer:float,force:bool = False) -> None:
+    def answer(self,answer:float,force:bool = False,train=True,**kargs) -> None:
         """If the answer is in the answer range, it is recorded in the answer history and the launch count is increased by one. If the answer is out of range, it is not recorded unless the force parameter is set to True.
 
         Parameters
@@ -264,6 +264,9 @@ class item:
         answer : float
             The answer given by the user.
         force : bool, optional
+            If True, the answer is recorded even if it is out of range, by default False.
+        kargs : dict
+            The keyword arguments are passed to the train method of the origin survey, if it exists.
         """
         if self.answer_range[0] <= answer <= self.answer_range[1]:
             self.answer_history.append(answer)
@@ -278,7 +281,8 @@ class item:
                     if self.category_vector[i] != 0:
                         sign = self.category_vector[i]/self.category_vector_abs[i]
                         survey.category_answer_history[i].append(answer*sign)
-                survey.train()
+                if train:
+                    survey.train(**kargs)
 
         else:
             if force:
@@ -294,7 +298,8 @@ class item:
                         if self.category_vector[i] != 0:
                             sign = self.category_vector[i]/self.category_vector_abs[i]
                             survey.category_answer_history[i].append(answer*sign)
-                    survey.train()
+                    if train:
+                        survey.train()
 
             else:
                 Exception('The answer was not recorded because it is out of range. You can force the answer to be recorded by setting the force parameter to True.')
