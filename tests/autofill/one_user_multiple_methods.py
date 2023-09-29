@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import time
 
-user_i = 3
+user_i = 4
 analysis_dim = 5
 iters_amnt = 365
 
@@ -12,10 +12,11 @@ user_name = chr(ord('A')+user_i)
 
 user_i_w = np.random.uniform(-2.05,2.05,size=analysis_dim)
 user_i_w = np.round(user_i_w,2)
+# user_i_w = np.array([1.76,-1.21,-0.12,1.5,-0.55])
 user_i_w_string = np.array2string(user_i_w,precision=2,separator=',',sign=' ')
 
 s_m1, wh_m1, entro_m1, rsq_m1 = su.one_user(savename = 'one_user_output/{}_m1'.format(user_name),
-                    title = 'Evolución del peso del usuario {}: {}'.format(user_name,user_i_w_string),
+                    title = 'Evolución del peso: {}'.format(user_i_w_string),
                     iter_amnt=iters_amnt,
                     target_w=user_i_w,
                     # change=True,
@@ -33,7 +34,7 @@ s_m1, wh_m1, entro_m1, rsq_m1 = su.one_user(savename = 'one_user_output/{}_m1'.f
 )
 
 s_m2, wh_m2, entro_m2, rsq_m2 = su.one_user(savename = 'one_user_output/{}_m2'.format(user_name),
-                    title = 'Evolución del peso del usuario {}: {}'.format(user_name,user_i_w_string),
+                    title = 'Evolución del peso: {}'.format(user_i_w_string),
                     iter_amnt=iters_amnt,
                     target_w=user_i_w,
                     # change=True,

@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import time
 from pydyn_surv import funcs
 
-user_amt = 6
+user_amt = 3
 analysis_dim = 5
 iters_amnt = 730
 
@@ -30,7 +30,7 @@ for user_i in range(user_amt):
                         target_w=user_i_w,
                         change=True,
                         change_to=user_i_w_2,
-                        change_at=200,
+                        change_at=365,
                         # suv_init_kargs={'train_function':defs.custom_train_function},
                         reduce_iters=True,
                         in_range_answer=True,

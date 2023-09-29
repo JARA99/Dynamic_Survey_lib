@@ -7,7 +7,9 @@ The model consists of a simple recommender system based on previous answers. For
 
 ## Documentation
 
-You can find the [user documentation page](https://jara99.github.io/Dynamic_Survey_lib/) over [here](https://jara99.github.io/Dynamic_Survey_lib/).
+You can find the [user documentation page over here.](https://jara99.github.io/Dynamic_Survey_lib/)
+
+[![](screenshots/docs.png)](https://jara99.github.io/Dynamic_Survey_lib/)
 
 ## Installation
 
@@ -20,3 +22,5 @@ pip install ./Dynamic_Survey_lib
 
 ## Usage example
 You can try the library capacities by looking at the app built on streamlit: [pydyn-surv-hobbies-test](https://pydyn-surv-hobbies-test.streamlit.app/). The source code for it is located inside the `examples` folder on [examples/hobbies_survey/](examples/hobbies_survey/).
+
+[![](screenshots/hobbies_example.png)](https://pydyn-surv-hobbies-test.streamlit.app/)
