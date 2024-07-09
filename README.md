@@ -3,7 +3,7 @@
 `pydyn_surv` it's a library for creating a **dyn**amic **surv**ey using basic tools in python. This can be incorporated to a user inteface with the flexibility that Python offers.
 
 ## The model
-The model consists of a recommender system based on previous answers. The details of the same are explained in the [thesis](thesis_spanish.pdf) document.
+The model consists of a recommender system based on previous answers. The details of the same are explained in the [thesis](https://www.ecfm.usac.edu.gt/sites/default/files/2023-11/Tesis%20Jorge%20Alejandro%20Rodriguez%20Aldana.pdf) document.
 
 ## Documentation
 
